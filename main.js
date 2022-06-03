@@ -63,9 +63,8 @@ const KEYWORDS = {
     ')' : 'close-parenthesis',
 }
 
+//trial - isa lang gumagana na lexeme
 function lexer(str) {
-    // for(let cursor = 0; cursor <= str.length; cursor++){
-    //     let char = str[0];
     let arr = str.split(' ');
     let size = Object.keys(KEYWORDS).length
 
