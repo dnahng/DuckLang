@@ -98,8 +98,8 @@
 
 const Lex = require('lexical-parser')
 
-let input = 'block { int a = 0 int b = 3 if (a < b && b > a) { print("Hello World") } }'
-
+// let input = 'block { int a = 0 int b = 3 if (a < b && b > a) { print("Hello World") } }'
+let input = 'a = 5'
 // You can specify an exact string or a regex for the token
 let tokenMatchers = [
     'block',
