@@ -33,6 +33,35 @@ export function* lexer(file, str){
                 // lexeme: buffer,
             }; 
         }
+
+        //test add
+
+        if (char === '-'){
+            // buffer+=char;
+            next();
+            return {
+                type: 'MinusToken',
+                // lexeme: buffer,
+            };
+        }
+
+        if (char === '*'){
+            // buffer+=char;
+            next();
+            return {
+                type: 'MultiplyToken',
+                // lexeme: buffer,
+            };
+        }
+
+        if (char === '/'){
+            // buffer+=char;
+            next();
+            return {
+                type: 'DivideToken',
+                // lexeme: buffer,
+            };
+        }
         return null;
     }
 
