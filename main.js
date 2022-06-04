@@ -99,7 +99,7 @@
 const Lex = require('lexical-parser')
 
 // let input = 'block { int a = 0 int b = 3 if (a < b && b > a) { print("Hello World") } }'
-let input = 'if(grade >=70){ show("passed") }el{show("failed")}'
+let input = 'do{floop(2){return 2}}while(num >= 0)'
 // You can specify an exact string or a regex for the token
 let tokenMatchers = [
     'if',
@@ -115,6 +115,9 @@ let tokenMatchers = [
     '=',
     '&&',
     'int',
+    'floop',
+    'do',
+    'while',
     ['integer', /[0-9]+/],
     ['id', /[a-zA-Z][a-zA-Z0-9]*/],
     ['string', /\".*?\"/]
