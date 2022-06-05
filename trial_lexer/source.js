@@ -1,5 +1,4 @@
-123
- +4567
-77-1
-9*9
-  /3
+floop(number = 0; number > 10; number++){
+    show(number);
+}
+//comment

@@ -302,7 +302,38 @@ export function *lexer(file, str) {
                 loc: { file, start, end },
             };
         }
+
+        if (char === "="){
+            const start = position();
+            next();
+            if (char === "="){
+                next();
+                return readComment(start);
+
+            }
+            const end = position();
+            return {
+                type: "EqualToken",
+                loc: { file, start, end },
+            };
+        }
+
         //TEST FOR GREATER/LESS THAN
+        if (char === ">"){
+            const start = position();
+            next();
+            if (char === ">"){
+                next();
+                return readComment(start);
+
+            }
+            const end = position();
+            return {
+                type: "GreaterThanToken",
+                loc: { file, start, end },
+            };
+        }
+
         if (char === "<") {
             const start = position();
             next();
@@ -319,7 +350,6 @@ export function *lexer(file, str) {
 
         return null;
     }
-
 
 
     function number() {
@@ -547,6 +577,7 @@ export function *lexer(file, str) {
                 string() ||
                 number ()||
                 operator()||
+                regexp()
                 // (mode === "expression" ? value() : operator()) ||
                 eol();
 
