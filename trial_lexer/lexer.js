@@ -545,6 +545,8 @@ export function *lexer(file, str) {
                 semicolon() ||
                 parents() ||
                 string() ||
+                number ()||
+                operator()||
                 // (mode === "expression" ? value() : operator()) ||
                 eol();
 
