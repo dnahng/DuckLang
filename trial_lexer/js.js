@@ -1,7 +1,7 @@
 import { readFileSync } from 'fs'
 import { lexer } from "./lexer.js"
 
-const file = "./source.js";
+const file = "./source.txt";
 
 const input = String(readFileSync(file));
 
