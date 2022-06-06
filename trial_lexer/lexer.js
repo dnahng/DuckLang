@@ -28,11 +28,13 @@ export function *lexer(file, str) {
     }
 
     function stringOfType(delimiter) {
+        let buffer = "";
         if (char !== delimiter) return null;
 
         const start = position();
         next();
         while (char !== delimiter) {
+            buffer += char;
             next();
         }
 
@@ -40,7 +42,8 @@ export function *lexer(file, str) {
 
         const end = position();
         return {
-            type: "String",
+            token: "String",
+            lexeme: buffer,
             loc: { file, start, end },
         };
     }
@@ -68,13 +71,14 @@ export function *lexer(file, str) {
 
             const end = position();
             return {
-                type: "RegExpToken",
+                token: "RegExpToken",
                 loc: { file, start, end },
             };
         }
     }
 
     function readComment(start) {
+        let buffer = "";
         for (;;) {
             if (char === "\n") {
                 newline();
@@ -85,40 +89,47 @@ export function *lexer(file, str) {
             if (char === undefined) {
                 break;
             }
-
+            buffer += char;
             next();
         }
 
         const end = position();
 
         return {
-            type: "CommentToken",
+            token: "CommentToken",
+            lexeme: buffer,
             loc: { file, start, end },
         };
     }
 
     function operator() {
+        let buffer = "";
         if (char === "+") {
+            buffer += char;
             const start = position();
             next();
             const end = position();
             return {
-                type: "PlusToken",
+                token: "PlusToken",
+                lexeme: buffer,
                 loc: { file, start, end },
             };
         }
 
         if (char === "*") {
+            buffer += char;
             const start = position();
             next();
             const end = position();
             return {
-                type: "MulToken",
+                token: "MulToken",
+                lexeme: buffer,
                 loc: { file, start, end },
             };
         }
 
         if (char === "/") {
+            buffer += char;
             const start = position();
             next();
             if (char === "/") {
@@ -127,11 +138,13 @@ export function *lexer(file, str) {
             }
             const end = position();
             return {
-                type: "DivToken",
+                token: "DivToken",
+                lexeme: buffer,
                 loc: { file, start, end },
             };
         }
         if (char === "-") {
+            buffer += char;
             const start = position();
             next();
             if (char === "-") {
@@ -140,12 +153,14 @@ export function *lexer(file, str) {
             }
             const end = position();
             return {
-                type: "MinusToken",
+                token: "MinusToken",
+                lexeme: buffer,
                 loc: { file, start, end },
             };
         }
 
         if (char === "="){
+            buffer += char;
             const start = position();
             next();
             if (char === "="){
@@ -155,13 +170,15 @@ export function *lexer(file, str) {
             }
             const end = position();
             return {
-                type: "EqualToken",
+                token: "EqualToken",
+                lexeme: buffer,
                 loc: { file, start, end },
             };
         }
 
         //TEST FOR GREATER/LESS THAN
         if (char === ">"){
+            buffer += char;
             const start = position();
             next();
             if (char === ">"){
@@ -171,12 +188,14 @@ export function *lexer(file, str) {
             }
             const end = position();
             return {
-                type: "GreaterThanToken",
+                token: "GreaterThanToken",
+                lexeme: buffer,
                 loc: { file, start, end },
             };
         }
 
         if (char === "<") {
+            buffer += char;
             const start = position();
             next();
             if (char === "<") {
@@ -185,7 +204,8 @@ export function *lexer(file, str) {
             }
             const end = position();
             return {
-                type: "LessThanToken",
+                token: "LessThanToken",
+                lexeme: buffer,
                 loc: { file, start, end },
             };
         }
@@ -205,8 +225,8 @@ export function *lexer(file, str) {
         if (buffer.length >= 1) {
             const end = position();
             return {
-                type: "NumericLiteral",
-                value: Number(buffer),
+                token: "NumericLiteral",
+                lexeme: Number(buffer),
                 loc: { file, start, end },
             };
         }
@@ -242,17 +262,18 @@ export function *lexer(file, str) {
 
         const end = position();
 
-        const type = KEYWORDS[buffer];
-        if (type) {
+        const token = KEYWORDS[buffer];
+        if (token) {
             return {
-                type,
+                token,
+                lexeme: buffer,
                 loc: { file, start, end },
             };
         }
 
         return {
-            type: "Id",
-            value: buffer,
+            token: "Id",
+            lexeme: buffer,
             loc: { file, start, end },
         };
 
@@ -264,56 +285,68 @@ export function *lexer(file, str) {
     }
 
     function semicolon() {
+        let buffer = "";
         if (char !== ";") return null;
         const start = position();
+        buffer += char;
         next();
 
         const end = position();
 
         return {
-            type: "Semicolon",
+            token: "Semicolon",
+            lexeme: buffer,
             loc: { file, start, end },
         };
     }
 
 
     function parents() {
+        let buffer = "";
         if (char === "(") {
+            buffer += char;
             const start = position();
             next();
             const end = position();
             return {
-                type: "OpenParent",
+                token: "OpenParent",
+                lexeme: buffer,
                 loc: { file, start, end },
             };
         }
 
         if (char === ")") {
+            buffer += char;
             const start = position();
             next();
             const end = position();
             return {
-                type: "CloseParent",
+                token: "CloseParent",
+                lexeme: buffer,
                 loc: { file, start, end },
             };
         }
 
         if (char === "{") {
+            buffer += char;
             const start = position();
             next();
             const end = position();
             return {
-                type: "OpenCurly",
+                token: "OpenCurly",
+                lexeme: buffer,
                 loc: { file, start, end },
             };
         }
 
         if (char === "}") {
+            buffer += char;
             const start = position();
             next();
             const end = position();
             return {
-                type: "CloseCurly",
+                token: "CloseCurly",
+                lexeme: buffer,
                 loc: { file, start, end },
             };
         }
@@ -334,7 +367,7 @@ export function *lexer(file, str) {
         const end = position();
 
         return {
-            type: "Whitespace",
+            token: "Whitespace",
             loc: { file, start, end },
         };
     }
@@ -352,7 +385,7 @@ export function *lexer(file, str) {
         const end = position();
 
         return {
-            type: "Newline",
+            token: "Newline",
             loc: { file, start, end },
         };
     }
@@ -362,7 +395,7 @@ export function *lexer(file, str) {
             const start = position();
             const end = start;
             return {
-                type: "EndOfFileToken",
+                token: "EndOfFileToken",
                 loc: { file, start, end },
             };
         }

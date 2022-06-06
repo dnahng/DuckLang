@@ -386,7 +386,6 @@ export function *lexer(file, str) {
         return null;
     }
 
-   
     for(;;){
         whitespace();
             const token =
