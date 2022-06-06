@@ -1,13 +1,9 @@
 string1 = "hello world";
 inp("Enter name: ");
-
-// show ( string1 );
-
+show ( string1 );
 // this is a comment
-
 const a = 5 + 5;
 b = 8;
-
 if(a > b){
   show(a);
 }
@@ -17,11 +13,12 @@ elf(a < b){
 el{
   show(a+b);
 }
-
 floop(i=0; i<a; i++){
   show(a);
 }
-
 while(a > b){
   show(b);
 }
+do{
+  show(string1);
+}while(string1);
