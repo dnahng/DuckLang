@@ -49,6 +49,10 @@ export function *lexer(file, str) {
         return stringOfType('"') || stringOfType("'");
     }
 
+    //TEST FOR INTEGER
+    // function string() {
+    //     return stringOfType('"') || stringOfType("'");
+    // }
 
     function regexp() {
         if (char === "/") {
@@ -276,6 +280,18 @@ export function *lexer(file, str) {
         };
     }
 
+    // function colon() {
+    //     if (char !== ",") return null;
+    //     const start = position();
+    //     next();
+
+    //     const end = position();
+
+    //     return {
+    //         type: "Colon",
+    //         loc: { file, start, end },
+    //     };
+    // }
 
     function parents() {
         if (char === "(") {
@@ -376,12 +392,14 @@ export function *lexer(file, str) {
             const token =
                 whitespace() ||
                 id() ||
+                // colon() ||
                 semicolon() ||
                 parents() ||
                 string() ||
                 number ()||
                 operator()||
                 regexp()
+                // (mode === "expression" ? value() : operator()) ||
                 eol();
 
         if (token){
@@ -403,5 +421,7 @@ export function *lexer(file, str) {
             `Unexpected Token "${char}" at ${file}:${line}:${column}`
             );
     }
-
+    // return {
+    //     next: next2,
+    // };
 }
