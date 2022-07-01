@@ -1,5 +1,9 @@
 {
   "dependencies": {
-    "lexical-parser": "^1.0.0"
+    "lexical-parser": "^1.0.0",
+    "prompt": "^1.3.0",
+    "prompt-sync": "^4.2.0",
+    "requirejs": "^2.3.6",
+    "uniq": "^1.0.1"
   }
 }
