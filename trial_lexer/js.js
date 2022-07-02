@@ -58,6 +58,7 @@ function delay(time) {
 // }
 
 //var declaration
+const lexFile = "./dump.txt";
 const file = "./source.txt";
 const file_input = String(readFileSync(file));
 const rl = readline.createInterface({ input, output });
@@ -79,7 +80,7 @@ do{
     // let ans = prompt("Please input your choice: ")  ;
     ans = await rl.question('Please input your choice: ');
 
-    //changed ans from int to string since JS gaming :)
+    //chan2ged ans from int to string since JS gaming :)
     switch(ans){
         case '1':
             console.log("1");
@@ -108,10 +109,12 @@ do{
             // console.log("press any key to go back to menu")
 
 
-            await delay(10000);
+            await delay(5000);
             console.log("you have returned");
             break;
         case '3':
+            console.log(String(readFileSync(lexFile)))
+            await delay(4000);
             break;
         case '4':
             break;

@@ -1,3 +1,10 @@
+import * as fs from 'fs'
+//dump functions, try lang to
+function LexErr(){
+
+}
+
+//funcs
 function isNumeric(c) {
     return "0" <= c && c <= "9";
 }
@@ -403,38 +410,59 @@ export function *lexer(file, str) {
         return null;
     }
 
-   
-    for(;;){
-        whitespace();
+
+    for(;;) {
+        try{
+            whitespace();
+            const maybeEof = eof();
             const token =
                 whitespace() ||
                 id() ||
                 semicolon() ||
                 parents() ||
                 string() ||
-                number ()||
-                operator()||
+                number() ||
+                operator() ||
                 regexp()
-                eol();
+            eol();
 
-        if (token){
-            if(token === true){
-                continue;
-            }
+                if (token) {
+                    if (token === true) {
+                        continue;
+                    }
 
-            yield token;
+                    yield token;
 
-            continue;
-        }
+                    continue;
+                }
+                else if(!token){
+                    throw new Error('error');
+                }
 
-        const maybeEof = eof()
-        if (maybeEof){
+                if (maybeEof) {
+                    break;
+                }
+                // continue;
+
+
+                // continue;
+                // const maybeEof = eof()
+                // if (maybeEof) {
+                //     break;
+                // }
+            } // try
+        catch (err){
+            console.log("error is caught");
             break;
         }
 
-        throw new SyntaxError(
-            `Unexpected Token "${char}" at ${file}:${line}:${column}`
-            );
-    }
+
+    // finally{
+    // continue;}
+
+        // throw new SyntaxError(
+        //     fs.writeFileSync('dump.txt',`Unexpected Token "${char}" at ${file}:${line}:${column}`)
+        //     );
+    }//end of for
 
 }
