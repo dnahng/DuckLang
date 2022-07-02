@@ -37,11 +37,9 @@ do{
         case '2':
             console.log("2");
             console.log("start");
-
-            for(const token of lexer(file_input, input)){
+            for(const token of lexer(file, file_input)){
                 console.log(token);
             }
-
             console.log('finish');
             break;
         case '3':
