@@ -1,1 +1,1 @@
-Lexical Error (Illegal Character) "%" found at ./source.txt:2:1
+Unexpected Token "&" at ./source.txt:3:1
