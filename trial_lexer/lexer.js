@@ -453,6 +453,7 @@ export function *lexer(file, str) {
             } // try
         catch (err){
             console.log("error is caught");
+            fs.writeFileSync('dump.txt',`Unexpected Token "${char}" at ${file}:${line}:${column}`)
             break;
         }
 
