@@ -135,6 +135,38 @@ export function parser(tokens) {
         return null;
     }
 
+    function EqualToken() {
+        if (token.type === "EqualToken") {
+            const _token = token;
+            next("expression");
+            return _token;
+        }
+
+        return null;
+    }
+
+    // ASSIGNMENT OP FUNC
+    // function AssignmentOp(left){
+    //     const op = EqualToken();
+    //     if(!op) return left;
+    //     if(left.token !== 'Id') return null;
+    //     const next = take('NumericLiteral');
+    //     const right = ExpressionMemberMust();
+    //     const node = {
+    //         type: "EqualToken",
+    //         left,
+    //         operatorToken: op,
+    //         right,
+    //         loc: {
+    //             file: op.loc.file,
+    //             start: left.loc.start,
+    //             end: right.loc.end,
+    //         },
+    //     }
+    //     return AssignmentOp(node);
+    // }
+
+
     function Expression() {
         return BinaryExpression();
     }
@@ -205,7 +237,8 @@ export function parser(tokens) {
     }
 
     function IfStatement() {
-        const kw = maybeTake("If");
+        //kw is for keyword
+        const kw = maybeTake("if");
         if (!kw) return null;
         take("OpenParent", "expression");
         const condition = Expression();
@@ -219,7 +252,7 @@ export function parser(tokens) {
         }
 
         let els = null;
-        const elseKw = maybeTake("Else", "expression");
+        const elseKw = maybeTake("else", "expression");
         if (elseKw) {
             els = Block() || Statement();
             if (!els) {
@@ -254,9 +287,15 @@ export function parser(tokens) {
 
         for (;;) {
             const colon = maybeTake("Colon");
-            if (!colon) break;
-            const id = take("Id");
-            args.push(id);
+            const num = maybeTake("NumericLiteral");
+            if (colon){
+                const id = take("Id");
+                args.push(id);
+            } else if(num){
+                // const n = take("NumericLiteral");
+                args.push(num);
+            }
+            else{break;}
         }
 
         take("CloseParent");
@@ -279,6 +318,30 @@ export function parser(tokens) {
         return {
             token: "FunctionStatement",
             name,
+            args,
+            body,
+            loc: {
+                file: kw.loc.file,
+                start: kw.loc.start,
+                end: body.loc.end,
+            },
+        };
+    }
+
+    // LOOPING STATEMENT
+    function FloopStatemenet() {
+        const kw = maybeTake("for loop");
+        if (!kw) return null;
+
+
+        const args = ArgumentList();
+        const body = Block();
+        if (!body) {
+            panic("Expected a Bloc for the function");
+        }
+
+        return {
+            type: "For Loop Statement",
             args,
             body,
             loc: {
@@ -313,6 +376,11 @@ export function parser(tokens) {
         const fnstmt = FunctionStatement();
         if (fnstmt) {
             return fnstmt;
+        }
+
+        const floopstmt = FloopStatemenet();
+        if(floopstmt){
+            return floopstmt;
         }
 
         return null;
