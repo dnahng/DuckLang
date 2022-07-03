@@ -286,16 +286,47 @@ export function parser(tokens) {
         }
 
         for (;;) {
-            const colon = maybeTake("Colon");
+            const semicolon = maybeTake("Semicolon");
             const num = maybeTake("NumericLiteral");
-            if (colon){
-                const id = take("Id");
+            const equal = maybeTake("EqualToken")
+            const lessthan = maybeTake("LessThanToken")
+            const greaterthan = maybeTake("GreaterThanToken")
+            const plus = maybeTake("PlusToken")
+            if (semicolon) {
+                const id = maybeTake("Id")
                 args.push(id);
-            } else if(num){
-                // const n = take("NumericLiteral");
+            } else if (num) {
                 args.push(num);
+                // const sem = take("Semicolon")
+                // args.push("Semicolon")
+            } else if (equal) {
+                const number = maybeTake("NumericLiteral")
+                args.push(number)
+                if (!number) {
+                    const id = take("Id")
+                    args.push(id);
+                }
+            }else if(lessthan){
+                const number = maybeTake("NumericLiteral")
+                args.push(number)
+                if (!number) {
+                    const id = take("Id")
+                    args.push(id);
+                }
+            } else if(greaterthan){
+                const number = maybeTake("NumericLiteral")
+                args.push(number)
+                if (!number) {
+                    const id = take("Id")
+                    args.push(id);
+                }
+            } else if(plus){
+                args.push(plus)
             }
-            else{break;}
+            else {
+                break;
+            }
+
         }
 
         take("CloseParent");
@@ -312,7 +343,7 @@ export function parser(tokens) {
 
         const body = Block();
         if (!body) {
-            panic("Expected a Bloc for the function");
+            panic("Expected a Block for the function");
         }
 
         return {
@@ -333,12 +364,27 @@ export function parser(tokens) {
         const kw = maybeTake("for loop");
         if (!kw) return null;
 
-
+        // const open = take("OpenParent", "expression");
+        // const id = take("Id")
+        // const semicolon = take("Semicolon")
+        // const close =take("CloseParent", "expression");
+        // const equal = maybeTake("EqualToken")
+        // if (!equal){
+        //     return id
+        // } else{
+        //     const value = take("NumericLiteral") || take("Id")
+        //     return value, semicolon
+        // }
+        // const then = Block() || Statement();
+        // if (!then) {
+        //     panic("Expected a Block for condition");
+        // }
         const args = ArgumentList();
-        const body = Block();
+        const body = Block() ;
         if (!body) {
             panic("Expected a Bloc for the function");
         }
+
 
         return {
             type: "For Loop Statement",

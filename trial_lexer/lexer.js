@@ -411,6 +411,7 @@ export function lexer(file, str) {
             id() ||
             semicolon() ||
             parents() ||
+            number() ||
             (mode === "expression" ? value() : operator()) ||
             eol();
 
