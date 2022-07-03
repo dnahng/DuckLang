@@ -1,5 +1,6 @@
 import { readFileSync } from 'fs'
 import { lexer } from "./lexer.js"
+import { parser } from "./parser.js"
 import * as readline from 'node:readline/promises';
 import { stdin as input, stdout as output } from 'node:process';
 import pressAnyKey from 'press-any-key';
@@ -118,9 +119,14 @@ do{
 
             console.log("2");
             console.log("start");
-            for (const token of lexer(file, file_input)) {
-                console.log(token);
-            }
+            // for (const token of parser(lexer(file, file_input))) {
+            //     console.log(token);
+            // }
+            const { ast, tokens } = parser(lexer(file, file_input));
+            console.dir(ast, { depth: null });
+
+            // console.log(highlight(content, tokens));
+
             console.log('finish');
             // console.log("press any key to go back to menu")
 

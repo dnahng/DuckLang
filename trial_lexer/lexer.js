@@ -1,10 +1,3 @@
-import * as fs from 'fs'
-//dump functions, try lang to
-// function LexErr(){
-//
-// }
-
-//funcs
 function isNumeric(c) {
     return "0" <= c && c <= "9";
 }
@@ -13,7 +6,7 @@ function isAlpha(c) {
     return ("a" <= c && c <= "z") || ("A" <= c && c <= "Z");
 }
 
-export function *lexer(file, str) {
+export function lexer(file, str) {
     let line = 1;
     let column = 1;
     let cursor = 0;
@@ -58,7 +51,6 @@ export function *lexer(file, str) {
     function string() {
         return stringOfType('"') || stringOfType("'");
     }
-
 
     function regexp() {
         if (char === "/") {
@@ -129,7 +121,7 @@ export function *lexer(file, str) {
             next();
             const end = position();
             return {
-                token: "MulToken",
+                token: "MultiplyToken",
                 lexeme: buffer,
                 loc: { file, start, end },
             };
@@ -220,7 +212,6 @@ export function *lexer(file, str) {
         return null;
     }
 
-
     function number() {
         let buffer = "";
         const start = position();
@@ -233,7 +224,7 @@ export function *lexer(file, str) {
             const end = position();
             return {
                 token: "NumericLiteral",
-                lexeme: Number(buffer),
+                value: Number(buffer),
                 loc: { file, start, end },
             };
         }
@@ -410,85 +401,34 @@ export function *lexer(file, str) {
         return null;
     }
 
-    //dump func, will remove
-    function synErr() {
-        const start = position();
-        // if (char !== SyntaxError) {
-        //     return null;
-        // }
-        // next();
-
-        if (SyntaxError(char)) {
-            // next();
+    function next2(mode) {
+        function value() {
+            return number() || string() || regexp();
         }
-        next();
-        const end = position() - 1;
 
-        return {
-            token: "SynErr",
-            loc: { file, start, end },
-        };
-    }
-
-
-    for(;;) {
-        try{
-            whitespace();
-            const maybeEof = eof();
-            const token =
-                whitespace() ||
-                id() ||
-                semicolon() ||
-                parents() ||
-                string() ||
-                number() ||
-                operator() ||
-                regexp() ||
-                synErr()
+        const token =
+            whitespace() ||
+            id() ||
+            semicolon() ||
+            parents() ||
+            (mode === "expression" ? value() : operator()) ||
             eol();
 
-                if (token.token !== 'SynErr') {
-                    if (token === true) {
-                        continue;
-                    }
-
-                    yield token;
-
-                    continue;
-                }
-                if (maybeEof) {
-                break;
-                }
-
-                else if(token.token === 'SynErr'){
-                    // next();
-                    throw new Error('error');
-                }
-
-
-                // continue;
-
-
-                // continue;
-                // const maybeEof = eof()
-                // if (maybeEof) {
-                //     break;
-                // }
-            } // try
-        catch (err){
-            console.log("error is caught");
-            fs.writeFileSync('dump.txt',`Unexpected Token "${char}" at ${file}:${line}:${column}`)
-            // next();
-            // continue;
+        if (token) {
+            return token;
         }
 
+        const maybeEof = eof();
+        if (maybeEof) {
+            return maybeEof;
+        }
 
-    // finally{
-    // continue;}
+        throw new SyntaxError(
+            `unexpected character "${char}" at ${file}:${line}:${column}`
+        );
+    }
 
-        // throw new SyntaxError(
-        //     fs.writeFileSync('dump.txt',`Unexpected Token "${char}" at ${file}:${line}:${column}`)
-        //     );
-    }//end of for
-
+    return {
+        next: next2,
+    };
 }
