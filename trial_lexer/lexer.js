@@ -1,8 +1,8 @@
 import * as fs from 'fs'
 //dump functions, try lang to
-function LexErr(){
-
-}
+// function LexErr(){
+//
+// }
 
 //funcs
 function isNumeric(c) {
@@ -410,6 +410,26 @@ export function *lexer(file, str) {
         return null;
     }
 
+    //dump func, will remove
+    function synErr() {
+        const start = position();
+        // if (char !== SyntaxError) {
+        //     return null;
+        // }
+        // next();
+
+        if (SyntaxError(char)) {
+            // next();
+        }
+        next();
+        const end = position() - 1;
+
+        return {
+            token: "SynErr",
+            loc: { file, start, end },
+        };
+    }
+
 
     for(;;) {
         try{
@@ -423,10 +443,11 @@ export function *lexer(file, str) {
                 string() ||
                 number() ||
                 operator() ||
-                regexp()
+                regexp() ||
+                synErr()
             eol();
 
-                if (token) {
+                if (token.token !== 'SynErr') {
                     if (token === true) {
                         continue;
                     }
@@ -435,13 +456,16 @@ export function *lexer(file, str) {
 
                     continue;
                 }
-                else if(!token){
+                if (maybeEof) {
+                break;
+                }
+
+                else if(token.token === 'SynErr'){
+                    // next();
                     throw new Error('error');
                 }
 
-                if (maybeEof) {
-                    break;
-                }
+
                 // continue;
 
 
@@ -454,7 +478,8 @@ export function *lexer(file, str) {
         catch (err){
             console.log("error is caught");
             fs.writeFileSync('dump.txt',`Unexpected Token "${char}" at ${file}:${line}:${column}`)
-            break;
+            // next();
+            // continue;
         }
 
 
