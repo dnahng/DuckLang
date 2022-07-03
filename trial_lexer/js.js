@@ -60,11 +60,11 @@ function delay(time) {
 
 //var declaration
 const lexFile = "./dump.txt";
-const file = "./source.txt";
+let file = "./source.txt";
 import f from "fs";
 import path from "path";
 
-const file_input = String(readFileSync(file));
+let file_input = String(readFileSync(file));
 const rl = readline.createInterface({ input, output });
 
 
@@ -92,15 +92,25 @@ do{
             let src =  await rl.question("Enter file path: ");
             const currentPath = path.join(src)
             //new file name
-            const newPath = path.join("./", "file-uploaded.txt")
+            file = path.join("./", currentPath);
 
-            f.rename(currentPath, newPath, function(err) {
-                if (err) {
-                    throw err
-                } else {
-                    console.log("\nSuccessfully uploaded the file!")
-                }
-            })
+            try {
+                file_input = String(readFileSync(file));
+                console.log("File successfully uploaded")
+            }catch(err){
+                console.log("File not found");
+            }
+
+            await rl.question("Press enter to go back to menu");
+
+            //changed bc it deletes file in directory
+            // f.rename(currentPath, newPath, function(err) {
+            //     if (err) {
+            //         throw err
+            //     } else {
+            //         console.log("\nSuccessfully uploaded the file!")
+            //     }
+            // })
 
             break;
 
@@ -118,7 +128,7 @@ do{
         // })().then(process.stdin.pause)
 
             console.log("2");
-            console.log("start");
+            console.log("--START--");
             // for (const token of parser(lexer(file, file_input))) {
             //     console.log(token);
             // }
@@ -127,11 +137,11 @@ do{
 
             // console.log(highlight(content, tokens));
 
-            console.log('finish');
+            console.log('--FINISH--');
             // console.log("press any key to go back to menu")
 
-
-            await delay(5000);
+            await rl.question("Press Enter to return to Menu");
+            // await delay(5000);
             console.log("you have returned");
             break;
         case '3':
