@@ -60,6 +60,9 @@ function delay(time) {
 //var declaration
 const lexFile = "./dump.txt";
 const file = "./source.txt";
+import f from "fs";
+import path from "path";
+
 const file_input = String(readFileSync(file));
 const rl = readline.createInterface({ input, output });
 
@@ -84,6 +87,19 @@ do{
     switch(ans){
         case '1':
             console.log("1");
+            //enter full file path
+            let src =  await rl.question("Enter file path: ");
+            const currentPath = path.join(src)
+            //new file name
+            const newPath = path.join("./", "file-uploaded.txt")
+
+            f.rename(currentPath, newPath, function(err) {
+                if (err) {
+                    throw err
+                } else {
+                    console.log("\nSuccessfully uploaded the file!")
+                }
+            })
 
             break;
 
