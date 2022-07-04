@@ -1,7 +1,1 @@
-if(a>8){
-    print(name);
-}elf(a>3){
-    print(2);
-}el{
- print(3);
-}
+a=2;

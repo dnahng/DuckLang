@@ -137,6 +137,16 @@ export function parser(tokens) {
         return null;
     }
 
+    function EqualToken() {
+        if (token.token === "EqualToken") {
+            const _token = token;
+            next("expression");
+            return _token;
+        }
+
+        return null;
+    }
+
     function MultiplyToken() {
         if (token.token === "MultiplyToken") {
             const _token = token;
@@ -157,15 +167,7 @@ export function parser(tokens) {
         return null;
     }
 
-    function EqualToken() {
-        if (token.type === "EqualToken") {
-            const _token = token;
-            next("expression");
-            return _token;
-        }
 
-        return null;
-    }
 
     // ASSIGNMENT OP FUNC
     // function AssignmentOp(left){
@@ -196,7 +198,7 @@ export function parser(tokens) {
         const head = ExpressionMember();
         if (!head) return null;
 
-        return MinusExpression(PlusExpression(MulExpression(head)));
+        return EqualExpression(MinusExpression(PlusExpression(MulExpression(head))));
 
     }
 
@@ -222,6 +224,30 @@ export function parser(tokens) {
 
         return PlusExpression(node);
     }
+
+    function EqualExpression(left) {
+        const op = EqualToken();
+        if (!op) return left;
+        const next = ExpressionMemberMust();
+
+        // magic!!!
+        const right = MulExpression(next);
+
+        const node = {
+            token: "BinaryExpression",
+            left,
+            operatorToken: op,
+            right: right,
+            loc: {
+                file: op.loc.file,
+                start: left.loc.start,
+                end: right.loc.end,
+            },
+        };
+
+        return EqualExpression(node);
+    }
+
 
     function MinusExpression(left) {
         const op = MinusToken();
