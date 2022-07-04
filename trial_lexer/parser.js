@@ -70,6 +70,12 @@ export function parser(tokens) {
             return FunctionCall(_token);
         }
 
+        if(token.token === "prompt"){
+            const _token = token;
+            next();
+            return FunctionCall(_token);
+        }
+
         if (
             token.token === "NumericLiteral" ||
             token.token === "String" ||
