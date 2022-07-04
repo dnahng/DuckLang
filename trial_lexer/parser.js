@@ -127,6 +127,16 @@ export function parser(tokens) {
         return null;
     }
 
+    function MinusToken() {
+        if (token.token === "MinusToken") {
+            const _token = token;
+            next("expression");
+            return _token;
+        }
+
+        return null;
+    }
+
     function MultiplyToken() {
         if (token.token === "MultiplyToken") {
             const _token = token;
@@ -186,8 +196,9 @@ export function parser(tokens) {
         const head = ExpressionMember();
         if (!head) return null;
 
-        return PlusExpression(MulExpression(head));
+        return MinusExpression(PlusExpression(MulExpression(head)));
     }
+
     function PlusExpression(left) {
         const op = PlusToken();
         if (!op) return left;
@@ -209,6 +220,29 @@ export function parser(tokens) {
         };
 
         return PlusExpression(node);
+    }
+
+    function MinusExpression(left) {
+        const op = MinusToken();
+        if (!op) return left;
+        const next = ExpressionMemberMust();
+
+        // magic!!!
+        const right = MulExpression(next);
+
+        const node = {
+            token: "BinaryExpression",
+            left,
+            operatorToken: op,
+            right: right,
+            loc: {
+                file: op.loc.file,
+                start: left.loc.start,
+                end: right.loc.end,
+            },
+        };
+
+        return MinusExpression(node);
     }
 
     function MulExpression(left) {
