@@ -1,3 +1,4 @@
+import * as fs from 'fs';
 export function parser(tokens) {
     let token = null;
     const rawTokens = [];
@@ -59,6 +60,11 @@ export function parser(tokens) {
 
     function ExpressionMember() {
         if (token.token === "Id") {
+            const _token = token;
+            next();
+            return FunctionCall(_token);
+        }
+        if(token.token === "output"){
             const _token = token;
             next();
             return FunctionCall(_token);
@@ -317,8 +323,8 @@ export function parser(tokens) {
                 panic("Expected an Expression for then");
             }
         }
-        // let els = null;
-        const elseKw = maybeTake("else");
+        // let el = null;
+        const elseKw = maybeTake("else", "expression");
         if (elseKw) {
             args.push(elseKw);
             const body = Block() || Statement()
@@ -328,19 +334,19 @@ export function parser(tokens) {
 
         }
 
-        // const end = els ? els.loc.end : then.loc.end;
-        return args;
-        // return {
-        //     token: "If",
-        //     condition,
-        //     then,
-        //     else: els,
-        //     loc: {
-        //         file: kw.loc.file,
-        //         start: kw.loc.start,
-        //         end,
-        //     },
-        // };
+        const end = elf ? elf.loc.end : then.loc.end;
+        // return args;
+        return {
+            token: "If",
+            condition,
+            then,
+            else: elf,
+            loc: {
+                file: kw.loc.file,
+                start: kw.loc.start,
+                end,
+            },
+        };
     }
 
     function ArgumentList() {
