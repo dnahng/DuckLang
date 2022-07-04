@@ -238,6 +238,7 @@ export function parser(tokens) {
 
     function IfStatement() {
         //kw is for keyword
+        const args = []
         const kw = maybeTake("if");
         if (!kw) return null;
         take("OpenParent", "expression");
@@ -245,34 +246,101 @@ export function parser(tokens) {
         if (!condition) {
             panic("Expected an Expression for condition");
         }
+        const greater = maybeTake("GreaterThanToken")
+        if(greater){
+            const num = take("NumericLiteral")
+            args.push(num)
+            if(!num){
+                const id = take("Id")
+                args.push(id)
+            }
+        }
+        const less = maybeTake("LessThanToken")
+        if(less){
+            const num = take("NumericLiteral")
+            args.push(num)
+            if(!num){
+                const id = take("Id")
+                args.push(id)
+            }
+        }
         take("CloseParent", "expression");
         const then = Block() || Statement();
         if (!then) {
             panic("Expected an Expression for then");
         }
-
-        let els = null;
-        const elseKw = maybeTake("else", "expression");
-        if (elseKw) {
-            els = Block() || Statement();
-            if (!els) {
-                panic("Expected an Expression for else");
+        // const body = Block()
+        // if(!body){
+        //     panic("Expected a block/statement for the if statement")
+        // }
+        const elf = maybeTake("else if")
+        if(elf){
+            const open = take("OpenParent")
+            args.push(open)
+            const num = maybeTake("NumericLiteral")
+            args.push(num)
+            if(!num){
+                const id = take("Id")
+                args.push(id)
+            }
+            const greater = maybeTake("GreaterThanToken")
+            if(greater){
+                const num = take("NumericLiteral")
+                args.push(num)
+                if(!num){
+                    const id = take("Id")
+                    args.push(id)
+                }
+            }
+            const less = maybeTake("LessThanToken")
+            if(less){
+                const num = take("NumericLiteral")
+                args.push(num)
+                if(!num){
+                    const id = take("Id")
+                    args.push(id)
+                }
+            }
+            const equal =  maybeTake("EqualToken")
+            if(equal){
+                const num = take("NumericLiteral")
+                args.push(num)
+                if(!num){
+                    const id = take("Id")
+                    args.push(id)
+                }
+            }
+            const close = take("CloseParent")
+            args.push(close)
+            const then = Block() || Statement();
+            if (!then) {
+                panic("Expected an Expression for then");
             }
         }
+        // let els = null;
+        const elseKw = maybeTake("else");
+        if (elseKw) {
+            args.push(elseKw);
+            const body = Block() || Statement()
+            if(!body){
+                panic("Expected a block/statement for the if statement")
+            }
 
-        const end = els ? els.loc.end : then.loc.end;
+        }
 
-        return {
-            token: "If",
-            condition,
-            then,
-            else: els,
-            loc: {
-                file: kw.loc.file,
-                start: kw.loc.start,
-                end,
-            },
-        };
+        // const end = els ? els.loc.end : then.loc.end;
+        return args;
+        // return {
+        //     token: "If",
+        //     condition,
+        //     then,
+        //     else: els,
+        //     loc: {
+        //         file: kw.loc.file,
+        //         start: kw.loc.start,
+        //         end,
+        //     },
+        // };
     }
 
     function ArgumentList() {
@@ -364,25 +432,10 @@ export function parser(tokens) {
         const kw = maybeTake("for loop");
         if (!kw) return null;
 
-        // const open = take("OpenParent", "expression");
-        // const id = take("Id")
-        // const semicolon = take("Semicolon")
-        // const close =take("CloseParent", "expression");
-        // const equal = maybeTake("EqualToken")
-        // if (!equal){
-        //     return id
-        // } else{
-        //     const value = take("NumericLiteral") || take("Id")
-        //     return value, semicolon
-        // }
-        // const then = Block() || Statement();
-        // if (!then) {
-        //     panic("Expected a Block for condition");
-        // }
         const args = ArgumentList();
         const body = Block() ;
         if (!body) {
-            panic("Expected a Bloc for the function");
+            panic("Expected a Block for the function");
         }
 
 
