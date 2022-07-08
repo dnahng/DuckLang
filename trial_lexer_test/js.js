@@ -132,9 +132,12 @@ do{
             // for (const token of parser(lexer(file, file_input))) {
             //     console.log(token);
             // }
-            const { ast, tokens } = parser(lexer(file, file_input));
-            console.dir(ast, { depth: null });
+            // const { ast, tokens } = parser(lexer(file, file_input));
+            // console.dir(ast, { depth: null });
 
+            for(const token of (lexer(file, file_input))){
+                console.log(token);
+            }
             // console.log(highlight(content, tokens));
 
             console.log('--FINISH--');
@@ -145,8 +148,11 @@ do{
             console.log("you have returned");
             break;
         case '3':
-            console.log(String(readFileSync(lexFile)))
-            await delay(4000);
+            // console.log(String(readFileSync(lexFile)))
+            // await delay(4000);
+            for(const token of lexer(file, file_input)){
+                console.log(token)
+            }
             break;
         case '4':
             break;

@@ -2,7 +2,7 @@ import { readFileSync } from 'fs'
 import {lexeme} from "./lexeme.js";
 import { lexer } from "./lexer.js"
 import { parser } from "./parser.js"
-import {trial} from "./trial.js"
+// import {trial} from "./trial.js"
 import * as readline from 'node:readline/promises';
 import { stdin as input, stdout as output } from 'node:process';
 import pressAnyKey from 'press-any-key';
@@ -151,14 +151,14 @@ do{
         case '3':
             // console.log(String(readFileSync(lexFile)))
 
-            for(const token of lexer(file, file_input)){
-                console.log(token)
-            }
+            // for(const token of parser(lexer(file, file_input))) {
+            //     console.log(token)
+            // }
+            parser(lexer(file, file_input))
             await delay(4000);
             break;
         case '4':
-            trial(lexer(file, file_input))
-
+            parser(lexer(file, file_input))
             break;
         case '5':
             break;
