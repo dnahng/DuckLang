@@ -1,4 +1,5 @@
 import { readFileSync } from 'fs'
+import {lexeme} from "./lexeme.js";
 import { lexer } from "./lexer.js"
 import { parser } from "./parser.js"
 import {trial} from "./trial.js"
@@ -19,7 +20,6 @@ function delay(time) {
 //         resolve()
 //     }))
 // }
-
 
 // function keyPress(message, keys) {
 //     const _message = message || "Press any key to continue...";
@@ -104,16 +104,40 @@ do{
 
             await rl.question("Press enter to go back to menu");
 
+            //changed bc it deletes file in directory
+            // f.rename(currentPath, newPath, function(err) {
+            //     if (err) {
+            //         throw err
+            //     } else {
+            //         console.log("\nSuccessfully uploaded the file!")
+            //     }
+            // })
+
             break;
 
         case '2':
+            //TEST CODE
+            //     ;(async () => {
+            //
+            //     console.log('program started, press any key to continue')
+            //     await keypress()
+            //     console.log('program still running, press any key to continue')
+            //     await keypress()
+            //     console.log('bye')
+            //     process.stdin.pause();
+            //
+            // })().then(process.stdin.pause)
+
             console.log("2");
             console.log("--START--");
-            // for (const token of parser(lexer(file, file_input))) {
+            for(const token of (lexeme(file, file_input))){
+                console.log(token);
+            }
+            // for (const token of lexer(file,file_input)) {
             //     console.log(token);
             // }
-            const { ast, tokens } = trial(lexer(file, file_input));
-            console.dir(ast, { depth: null });
+
+            // console.dir(ast, { depth: null });
 
             // console.log(highlight(content, tokens));
 
@@ -126,9 +150,14 @@ do{
             break;
         case '3':
             // console.log(String(readFileSync(lexFile)))
-            // await delay(4000);
+
+            for(const token of lexer(file, file_input)){
+                console.log(token)
+            }
+            await delay(4000);
             break;
         case '4':
+            trial(lexer(file, file_input))
 
             break;
         case '5':
