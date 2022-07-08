@@ -6,14 +6,14 @@ function isAlpha(c) {
     return ("a" <= c && c <= "z") || ("A" <= c && c <= "Z");
 }
 
-export function *lexer(file, str) {
+export function *lexeme(file, str) {
     let line = 1;
     let column = 1;
     let cursor = 0;
     let char = str[cursor];
 
     function position() {
-        return { cursor, line, column };
+        return {cursor, line, column};
     }
 
     function next() {
@@ -44,13 +44,14 @@ export function *lexer(file, str) {
         return {
             token: "String",
             lexeme: buffer,
-            loc: { file, start, end },
+            loc: {file, start, end},
         };
     }
 
     function string() {
         return stringOfType('"') || stringOfType("'");
     }
+
 
     function regexp() {
         if (char === "/") {
@@ -71,14 +72,14 @@ export function *lexer(file, str) {
             const end = position();
             return {
                 token: "RegExpToken",
-                loc: { file, start, end },
+                loc: {file, start, end},
             };
         }
     }
 
     function readComment(start) {
         let buffer = "";
-        for (;;) {
+        for (; ;) {
             if (char === "\n") {
                 newline();
                 next();
@@ -97,7 +98,7 @@ export function *lexer(file, str) {
         return {
             token: "CommentToken",
             lexeme: buffer,
-            loc: { file, start, end },
+            loc: {file, start, end},
         };
     }
 
@@ -111,7 +112,7 @@ export function *lexer(file, str) {
             return {
                 token: "PlusToken",
                 lexeme: buffer,
-                loc: { file, start, end },
+                loc: {file, start, end},
             };
         }
 
@@ -121,9 +122,9 @@ export function *lexer(file, str) {
             next();
             const end = position();
             return {
-                token: "MultiplyToken",
+                token: "MulToken",
                 lexeme: buffer,
-                loc: { file, start, end },
+                loc: {file, start, end},
             };
         }
 
@@ -139,7 +140,7 @@ export function *lexer(file, str) {
             return {
                 token: "DivToken",
                 lexeme: buffer,
-                loc: { file, start, end },
+                loc: {file, start, end},
             };
         }
         if (char === "-") {
@@ -154,15 +155,15 @@ export function *lexer(file, str) {
             return {
                 token: "MinusToken",
                 lexeme: buffer,
-                loc: { file, start, end },
+                loc: {file, start, end},
             };
         }
 
-        if (char === "="){
+        if (char === "=") {
             buffer += char;
             const start = position();
             next();
-            if (char === "="){
+            if (char === "=") {
                 next();
                 return readComment(start);
 
@@ -171,16 +172,16 @@ export function *lexer(file, str) {
             return {
                 token: "EqualToken",
                 lexeme: buffer,
-                loc: { file, start, end },
+                loc: {file, start, end},
             };
         }
 
         //TEST FOR GREATER/LESS THAN
-        if (char === ">"){
+        if (char === ">") {
             buffer += char;
             const start = position();
             next();
-            if (char === ">"){
+            if (char === ">") {
                 next();
                 return readComment(start);
 
@@ -189,7 +190,7 @@ export function *lexer(file, str) {
             return {
                 token: "GreaterThanToken",
                 lexeme: buffer,
-                loc: { file, start, end },
+                loc: {file, start, end},
             };
         }
 
@@ -205,12 +206,13 @@ export function *lexer(file, str) {
             return {
                 token: "LessThanToken",
                 lexeme: buffer,
-                loc: { file, start, end },
+                loc: {file, start, end},
             };
         }
 
         return null;
     }
+
 
     function number() {
         let buffer = "";
@@ -224,8 +226,8 @@ export function *lexer(file, str) {
             const end = position();
             return {
                 token: "NumericLiteral",
-                value: Number(buffer),
-                loc: { file, start, end },
+                lexeme: Number(buffer),
+                loc: {file, start, end},
             };
         }
 
@@ -234,14 +236,14 @@ export function *lexer(file, str) {
 
     const KEYWORDS = {
         if: "if",
-        elf:"else if",
+        elf: "else if",
         el: "else",
-        while : "while loop",
-        show : "output",
+        while: "while loop",
+        show: "output",
         //shown : "output\n",
-        floop :"for loop",
-        const : "constant",
-        inp : "prompt",
+        floop: "for loop",
+        const: "constant",
+        inp: "prompt",
         function: "Function",
         do: "do-while loop",
     };
@@ -265,14 +267,14 @@ export function *lexer(file, str) {
             return {
                 token,
                 lexeme: buffer,
-                loc: { file, start, end },
+                loc: {file, start, end},
             };
         }
 
         return {
             token: "Id",
             lexeme: buffer,
-            loc: { file, start, end },
+            loc: {file, start, end},
         };
 
         return null;
@@ -294,7 +296,7 @@ export function *lexer(file, str) {
         return {
             token: "Semicolon",
             lexeme: buffer,
-            loc: { file, start, end },
+            loc: {file, start, end},
         };
     }
 
@@ -309,7 +311,7 @@ export function *lexer(file, str) {
             return {
                 token: "OpenParent",
                 lexeme: buffer,
-                loc: { file, start, end },
+                loc: {file, start, end},
             };
         }
 
@@ -321,7 +323,7 @@ export function *lexer(file, str) {
             return {
                 token: "CloseParent",
                 lexeme: buffer,
-                loc: { file, start, end },
+                loc: {file, start, end},
             };
         }
 
@@ -333,7 +335,7 @@ export function *lexer(file, str) {
             return {
                 token: "OpenCurly",
                 lexeme: buffer,
-                loc: { file, start, end },
+                loc: {file, start, end},
             };
         }
 
@@ -345,7 +347,7 @@ export function *lexer(file, str) {
             return {
                 token: "CloseCurly",
                 lexeme: buffer,
-                loc: { file, start, end },
+                loc: {file, start, end},
             };
         }
 
@@ -366,7 +368,7 @@ export function *lexer(file, str) {
 
         return {
             token: "Whitespace",
-            loc: { file, start, end },
+            loc: {file, start, end},
         };
     }
 
@@ -384,7 +386,7 @@ export function *lexer(file, str) {
 
         return {
             token: "Newline",
-            loc: { file, start, end },
+            loc: {file, start, end},
         };
     }
 
@@ -394,47 +396,16 @@ export function *lexer(file, str) {
             const end = start;
             return {
                 token: "EndOfFileToken",
-                loc: { file, start, end },
+                loc: {file, start, end},
             };
         }
 
         return null;
     }
 
-    // function next2(mode) {
-    //     function value() {
-    //         return number() || string() || regexp();
-    //     }
-    //
-    //     const token =
-    //         whitespace() ||
-    //         id() ||
-    //         semicolon() ||
-    //         parents() ||
-    //         number() ||
-    //         (mode === "expression" ? value() : operator()) ||
-    //         eol();
-    //
-    //     if (token) {
-    //         return token;
-    //     }
-    //
-    //     const maybeEof = eof();
-    //     if (maybeEof) {
-    //         return maybeEof;
-    //     }
-    //
-    //     throw new SyntaxError(
-    //         `unexpected character "${char}" at ${file}:${line}:${column}`
-    //     );
-    // }
-
-    // return {
-    //     next: next2,
-    // };
 
     for (; ;) {
-        // whitespace();
+        whitespace();
         const token =
             whitespace() ||
             id() ||
@@ -447,42 +418,18 @@ export function *lexer(file, str) {
         eol();
 
         if (token) {
-            return token;
-        }
-        if (token) {
             if (token === true) {
                 continue;
             }
 
             yield token;
 
-
+            continue;
         }
 
         const maybeEof = eof()
         if (maybeEof) {
             break;
-            // return maybeEof;
         }
-
-        class Error{
-            constructor(ErrorMessage) {
-                this.ErrorMessage = ErrorMessage;
-                this.typeOfError = "Error";
-                // this.stack = c
-            }
-        }
-
-        class LexicalError extends Error{
-            constructor(ErrorMessage) {
-                super(ErrorMessage);
-                this.typeOfError = "LexicalError";
-            }
-        }
-        throw new LexicalError(
-            `unexpected character "${char}" at ${file}:${line}:${column}`
-        );
-
-
     }
 }
