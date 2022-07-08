@@ -913,6 +913,12 @@ export function lexer(file, str) {
                 this.typeOfError = "LexicalError";
             }
         }
+        // class LexicalError2 extends Error{
+        //     constructor(ErrorMessage) {
+        //         super(ErrorMessage);
+        //         this.typeOfError = "LexicalError2";
+        //     }
+        // }
 
         const token =
             whitespace() ||
@@ -938,7 +944,7 @@ export function lexer(file, str) {
             next2();
             newline();
             next2();
-        };
+        }
 
         console.log(new LexicalError(`unexpected character "${char}" at ${file}:${line}:${column}`))
         nextLine();
@@ -949,3 +955,4 @@ export function lexer(file, str) {
         next: next2,
     };
 }
+

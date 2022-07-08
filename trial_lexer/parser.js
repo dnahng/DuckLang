@@ -1,4 +1,6 @@
 import * as fs from 'fs';
+import {lexer} from "./lexer.js";
+
 export function parser(tokens) {
     let token = null;
     const rawTokens = [];
@@ -19,11 +21,26 @@ export function parser(tokens) {
         // console.log("parser: ", token && token.type);
     }
 
+    class Error {
+        constructor(ErrorMessage) {
+            this.ErrorMessage = ErrorMessage;
+            this.typeOfError = "Error";
+            // this.stack = c
+        }
+    }
+
+    class SyntaxError extends Error {
+        constructor(ErrorMessage) {
+            super(ErrorMessage);
+            this.typeOfError = "SyntaxError";
+        }
+    }
+
+
     function panic(message) {
-        throw new SyntaxError(
+
             // @ts-ignore
-            `${message} at ${token.loc.file}:${token.loc.start.line}:${token.loc.start.column}`
-        );
+           console.log(new SyntaxError(`${message} at ${token.loc.file}:${token.loc.start.line}:${token.loc.start.column}`));
     }
 
     function FunctionCall(name) {
