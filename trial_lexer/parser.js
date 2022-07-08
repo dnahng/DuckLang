@@ -418,7 +418,7 @@ export function parser(tokens) {
 
         }
 
-        const end = elf ? elf.loc.end : then.loc.end;
+        // const end = elf ? elf.loc.end : then.loc.end;
         // return args;
         return {
             token: "If",
@@ -428,7 +428,7 @@ export function parser(tokens) {
             loc: {
                 file: kw.loc.file,
                 start: kw.loc.start,
-                end,
+                // end,
             },
         };
     }
@@ -512,7 +512,7 @@ export function parser(tokens) {
             loc: {
                 file: kw.loc.file,
                 start: kw.loc.start,
-                end: body.loc.end,
+                // end: body.loc.end,
             },
         };
     }
@@ -536,7 +536,7 @@ export function parser(tokens) {
             loc: {
                 file: kw.loc.file,
                 start: kw.loc.start,
-                end: body.loc.end,
+                // end: body.loc.end,
             },
         };
     }
@@ -551,7 +551,7 @@ export function parser(tokens) {
                 loc: {
                     file: expression.loc.file,
                     start: expression.loc.start,
-                    end: sc.loc.end,
+                    // end: sc.loc.end,
                 },
             };
         }
