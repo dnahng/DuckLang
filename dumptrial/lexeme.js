@@ -408,9 +408,11 @@ export function lexeme(file, str) {
         for (const ill of illChars){
             if(String(char) === ill){
                 const start = position();
-                next();
+                // next();
                 const end = position();
-
+                // next();
+                fs.appendFileSync('dump.txt', `\nLexical Error: unexpected character "${char}" at ${file}:${line}:${column}`);
+                next();
 
                 return {
                     errortype: "LexicalError",
@@ -433,7 +435,7 @@ export function lexeme(file, str) {
         // }
 
 
-       // return null;
+        // return null;
 
 
     }//end lexerr
@@ -464,10 +466,12 @@ export function lexeme(file, str) {
             return maybeEof;
         }
 
-       else if(token.errortype === 'LexicalError'){
-            fs.appendFileSync('dump.txt', `\nunexpected character "${char}" at ${file}:${line}:${column}`);
-            console.log("error found");
-        }
+
+        // else if(token.errortype === 'LexicalError'){
+        //      fs.appendFileSync('dump.txt', `\n${token.errortype}: unexpected character "${char}" at ${file}:${line}:${column}`);
+        //      console.log("error found");
+        //      // next();
+        //  }
 
         // const err1 = lexErr();
         // if(err1){

@@ -6,15 +6,14 @@ export function parser(tokens) {
     function next(mode) {
         token = tokens.next(mode);
         if (!token) {
-            fs.appendFileSync('dump.txt',"\nnext token is undefined");
+            // fs.appendFileSync('dump.txt',"\nnext token is undefined");
             return next(mode);
         }
         rawTokens.push(token);
         if (
             token.token === "CommentToken" ||
             token.token === "Whitespace" ||
-            token.token === "Newline" ||
-            token.token === "LexicalError"
+            token.token === "Newline"
         ) {
             return next(mode);
         }
