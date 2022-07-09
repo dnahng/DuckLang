@@ -11,11 +11,18 @@ export function parser(tokens) {
             throw new TypeError("next token is undefined");
         }
         rawTokens.push(token);
+
+        // if(token){
+        //     rawTokens.push(token)
+        // }else{
+        //    return new TypeError("next token is undefined")
+        // }
+
         if (
             token.token === "CommentToken" ||
             token.token === "Whitespace" ||
             token.token === "Newline"
-        ) {
+        ){
             return next(mode);
         }
         // console.log("parser: ", token && token.type);
@@ -33,6 +40,12 @@ export function parser(tokens) {
         constructor(ErrorMessage) {
             super(ErrorMessage);
             this.typeOfError = "SyntaxError";
+        }
+    }
+    class TypeError extends Error {
+        constructor(ErrorMessage) {
+            super(ErrorMessage);
+            this.typeOfError = "TypeError";
         }
     }
 
