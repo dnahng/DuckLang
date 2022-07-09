@@ -154,11 +154,13 @@ do{
             // for(const token of parser(lexer(file, file_input))) {
             //     console.log(token)
             // }
-            parser(lexer(file, file_input))
-            await delay(4000);
+            parser(lexer(file,file_input))
+            await delay(5000);
             break;
         case '4':
             parser(lexer(file, file_input))
+           // lexer(file,file_input)
+            await delay(4000);
             break;
         case '5':
             break;

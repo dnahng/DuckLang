@@ -39,8 +39,8 @@ export function parser(tokens) {
 
     function panic(message) {
 
-            // @ts-ignore
-           console.log(new SyntaxError(`${message} at ${token.loc.file}:${token.loc.start.line}:${token.loc.start.column}`));
+        // @ts-ignore
+        console.log(new SyntaxError(`${message} at ${token.loc.file}:${token.loc.start.line}:${token.loc.start.column}`));
     }
 
     function FunctionCall(name) {
@@ -69,8 +69,8 @@ export function parser(tokens) {
             arguments: args,
             loc: {
                 file: open.loc.file,
-                start: open.loc.start,
-                end: close.loc.start,
+                // start: open.loc.start,
+                // end: close.loc.start,
             },
         };
     }
@@ -234,8 +234,8 @@ export function parser(tokens) {
             right: right,
             loc: {
                 file: op.loc.file,
-                start: left.loc.start,
-                end: right.loc.end,
+                // start: left.loc.start,
+                // end: right.loc.end,
             },
         };
 
@@ -257,8 +257,8 @@ export function parser(tokens) {
             right: right,
             loc: {
                 file: op.loc.file,
-                start: left.loc.start,
-                end: right.loc.end,
+                // start: left.loc.start,
+                // end: right.loc.end,
             },
         };
 
@@ -281,8 +281,8 @@ export function parser(tokens) {
             right: right,
             loc: {
                 file: op.loc.file,
-                start: left.loc.start,
-                end: right.loc.end,
+                // start: left.loc.start,
+                // end: right.loc.end,
             },
         };
 
@@ -301,8 +301,8 @@ export function parser(tokens) {
             right,
             loc: {
                 file: op.loc.file,
-                start: left.loc.start,
-                end: right.loc.end,
+                // start: left.loc.start,
+                // end: right.loc.end,
             },
         };
 
@@ -320,8 +320,8 @@ export function parser(tokens) {
             body,
             loc: {
                 file: open.loc.file,
-                start: open.loc.start,
-                end: close.loc.start,
+                // start: open.loc.start,
+                // end: close.loc.start,
             },
         };
     }
@@ -357,7 +357,7 @@ export function parser(tokens) {
         take("CloseParent", "expression");
         const then = Block() || Statement();
         if (!then) {
-            panic("Expected an Expression for then");
+            panic("Expected an Expression after ')'");
         }
         // const body = Block()
         // if(!body){
@@ -427,7 +427,7 @@ export function parser(tokens) {
             else: elf,
             loc: {
                 file: kw.loc.file,
-                start: kw.loc.start,
+                // start: kw.loc.start,
                 // end,
             },
         };
@@ -511,7 +511,7 @@ export function parser(tokens) {
             body,
             loc: {
                 file: kw.loc.file,
-                start: kw.loc.start,
+                // start: kw.loc.start,
                 // end: body.loc.end,
             },
         };
@@ -535,7 +535,7 @@ export function parser(tokens) {
             body,
             loc: {
                 file: kw.loc.file,
-                start: kw.loc.start,
+                // start: kw.loc.start,
                 // end: body.loc.end,
             },
         };
@@ -550,7 +550,7 @@ export function parser(tokens) {
                 expression,
                 loc: {
                     file: expression.loc.file,
-                    start: expression.loc.start,
+                    // start: expression.loc.start,
                     // end: sc.loc.end,
                 },
             };

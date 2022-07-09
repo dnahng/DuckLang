@@ -954,5 +954,25 @@ export function lexer(file, str) {
     return {
         next: next2,
     };
-}
 
+    // let token = null;
+    // const rawTokens = [];
+    //
+    // function next(mode) {
+    //     token = tokens.next(mode);
+    //     if (!token) {
+    //         throw new TypeError("next token is undefined");
+    //     }
+    //     rawTokens.push(token);
+    //     if (
+    //         token.token === "CommentToken" ||
+    //         token.token === "Whitespace" ||
+    //         token.token === "Newline"
+    //     ) {
+    //         return next(mode);
+    //     }
+        // console.log("parser: ", token && token.type);
+    // }
+
+
+}
