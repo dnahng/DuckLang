@@ -248,7 +248,7 @@ export function lexeme(file, str) {
     };
 
     function id() {
-        let buffer = "";
+        var buffer = "";
         if (!isAlpha(char)) return null;
         const start = position();
         buffer += char;

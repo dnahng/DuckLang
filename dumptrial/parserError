@@ -1,0 +1,2 @@
+Expected ExpressionMember got "EndOfFileToken" at ./source.txt:1:8
+Expected token type "Semicolon" got "EndOfFileToken" at ./source.txt:1:8

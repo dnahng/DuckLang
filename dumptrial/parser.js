@@ -22,7 +22,7 @@ export function parser(tokens) {
 
     function panic(message) {
         let data = `${message} at ${token.loc.file}:${token.loc.start.line}:${token.loc.start.column}\n`;
-        fs.appendFileSync('dump.txt', data);
+        fs.appendFileSync('parserError', data);
 
     }
 

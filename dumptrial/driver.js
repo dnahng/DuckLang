@@ -10,6 +10,7 @@ import { stdin as input, stdout as output } from 'node:process';
 
 //var declaration
 const lexFile = "./dump.txt";
+const parseFile = "./parserError"
 let file = "./source.txt";
 import f from "fs";
 import path from "path";
@@ -78,7 +79,9 @@ do{
             // await delay(4000);
             break;
         case '4':
-
+            console.log("\nSyntax Errors:")
+            console.log(String(readFileSync(parseFile)))
+            await rl.question("Press Enter to return to Menu");
             break;
         case '5':
             break;
