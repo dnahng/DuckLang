@@ -411,7 +411,7 @@ export function lexeme(file, str) {
                 // next();
                 const end = position();
                 // next();
-                fs.appendFileSync('dump.txt', `\nLexical Error: unexpected character "${char}" at ${file}:${line}:${column}`);
+                fs.appendFileSync('dump.txt', `Lexical Error: unexpected character "${char}" at ${file}:${line}:${column}\n`);
                 next();
 
                 return {
@@ -421,24 +421,8 @@ export function lexeme(file, str) {
             }
         }
 
-        // if (char.this === undefined ) {
-        //     const start = position();
-        //     next();
-        //     const end = position();
-        //
-        //
-        //     return {
-        //         token: "LexicalError",
-        //         loc: { file, start, end },
-        //     };
-        //
-        // }
-
-
-        // return null;
-
-
     }//end lexerr
+
 
     function next2(mode) {
         function value() {
@@ -467,41 +451,6 @@ export function lexeme(file, str) {
         }
 
 
-        // else if(token.errortype === 'LexicalError'){
-        //      fs.appendFileSync('dump.txt', `\n${token.errortype}: unexpected character "${char}" at ${file}:${line}:${column}`);
-        //      console.log("error found");
-        //      // next();
-        //  }
-
-        // const err1 = lexErr();
-        // if(err1){
-        //     return err1;
-        // }
-
-        // if(token === null && maybeEof === null){
-        //     const err1 = lexErr();
-        //     if(err1){
-        //         return err1;
-        //     }
-        //     // fs.appendFileSync('dump.txt', `\n unexpected character "${char}" at ${file}:${line}:${column}`);
-        //     // console.log("error found");
-        //     // return{
-        //     //     token: "LexicalError",
-        //     // };
-        // }
-
-        // class LexicalError extends Error{
-        //     constructor(ErrorMessage) {
-        //         super(ErrorMessage);
-        //         this.typeOfError = "LexicalError";
-        //         console.log("hatdof");
-        //     }
-        // }
-        //
-        //
-        // throw new LexicalError(
-        //     fs.appendFileSync('dump.txt', `\n unexpected character "${char}" at ${file}:${line}:${column}`)
-        // );
 
     } //end of next
 

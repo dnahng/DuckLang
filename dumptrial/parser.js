@@ -21,7 +21,7 @@ export function parser(tokens) {
     }
 
     function panic(message) {
-        let data = `\n${message} at ${token.loc.file}:${token.loc.start.line}:${token.loc.start.column}`;
+        let data = `${message} at ${token.loc.file}:${token.loc.start.line}:${token.loc.start.column}\n`;
         fs.appendFileSync('dump.txt', data);
 
     }
@@ -104,7 +104,13 @@ export function parser(tokens) {
             return _token;
         }
 
-        panic(`Expected token type "${type}" got "${token.token}"`);
+        if(token.token === "Id" && type === "Semicolon"){
+            panic(`Lexical Error: Illegal Variable Declaration`);
+        }
+        else{
+            panic(`Expected token type "${type}" got "${token.token}"`); //DITO KA MAGFOCUS RIGHT NOW
+
+        }
     }
 
     function maybeTake(type, mode) {

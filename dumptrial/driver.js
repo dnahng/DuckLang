@@ -72,6 +72,7 @@ do{
             console.log("you have returned");
             break;
         case '3':
+            console.log("\nLexical Errors:")
             console.log(String(readFileSync(lexFile)))
             await rl.question("Press Enter to return to Menu");
             // await delay(4000);
