@@ -1,5 +1,6 @@
 import * as fs from 'fs';
 export function parser(tokens) {
+    let idArr = []; //try lang
     let token = null;
     const rawTokens = [];
 
@@ -230,6 +231,13 @@ export function parser(tokens) {
             },
         };
 
+        const idTemp = {
+            lexeme: left.lexeme,
+            token: right.token,
+        }
+
+        idArr.push(idTemp);
+
         return EqualExpression(node);
     }
 
@@ -250,7 +258,16 @@ export function parser(tokens) {
                 // end: right.loc.end,
             },
         };
-        if(left.token !== right.token){
+        if(left.token !== right.token && left.token !== "BinaryExpression"){
+            if(left.token === "Id"){
+                for(let i = 0; i<idArr.length; i++){
+                    if(idArr[i].lexeme === left.lexeme){
+                        if(idArr[i].token === right.token){
+                            return MulExpression(node);
+                        }
+                    }
+                }
+            }
             semError('Semantic Error: Data Type Mismatch');
         }
 
