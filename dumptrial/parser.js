@@ -96,7 +96,7 @@ export function parser(tokens) {
         if(token.token === "NumericLiteral"){
             const _token = token;
             next();
-            return token;
+            return _token;
         }
 
         return null;
