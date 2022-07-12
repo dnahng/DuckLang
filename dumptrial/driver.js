@@ -58,7 +58,7 @@ do{
 
         case '2':
             fs.writeFileSync('lexerror.txt', '');
-            fs.writeFileSync('dump.txt', '');
+            fs.writeFileSync('parserError', '');
             console.log("2");
             console.log("--START--");
             // for (const token of parser(lexer(file, file_input))) {
@@ -88,7 +88,7 @@ do{
             break;
         case '6':
             fs.writeFileSync('lexerror.txt', '');
-            fs.writeFileSync('dump.txt', '');
+            fs.writeFileSync('parserError', '');
             console.log("You have exited the program");
             break;
         default:
