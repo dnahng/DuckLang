@@ -5,7 +5,8 @@ import { stdin as input, stdout as output } from 'node:process';
 
 export function parser(tokens) {
     let trash = false;
-    let broot = false; //brotforce code LOLOLOL
+    let broot = false; //brotforce code LOLOLOL..idk what it does anymore maybe remove
+    let err_mode = "none"; //TODO will use for lex_error or syn_error or sem_error mode
     let token = null;
     const rawTokens = [];
 
@@ -16,19 +17,29 @@ export function parser(tokens) {
             broot = false;
             token = tokens.next(mode);
         }
-        if (trash===true) {
-            while (token.token !== "Newline" || token.token !== "EndOfFileToken" && trash===true) {
-                if (trash === true && token.token !=="Newline" && token.token !=="EndOfFileToken") {
-                    token = tokens.next(mode);
-                    broot = true;
-                }
-                else {
-                    broot = false;
+        if (trash===true || token.token === "trash") {
+            //loop and trash the token until you get to end of scope/line or EOF
+            while (token.token !== "Newline" || token.token !== "EndOfFileToken" && trash===true || token.token === "trash") {
+                //needed the if for the else lol
+                if (trash === true || token.token === "trash"
+                    && token.token !== "Newline" && token.token !=="EndOfFileToken") {
+                    if(token.token!=="Newline") {
+                        //enter and throw trash away
+                        token = tokens.next(mode); //gets next possibly legitimate variable
+                        broot = true; //dont enter lexer again}
+                    }else { //dont throw trash, broot = false so it goes next to take legitimate token
+                        trash = false;
+                        break;
+                        // return next(mode); //after trash thrown; start again
+                    }
+                }else { //dont throw trash, broot = false so it goes next to take legitimate token
                     trash = false;
-                    return next(mode);
+                    break;
+                    // return next(mode); //after trash thrown; start again
                 }
             }
         }
+        broot = false; //may now enter lexer again
         if (!token) {
             throw new TypeError("next token is undefined");
         }
@@ -47,10 +58,32 @@ export function parser(tokens) {
         trash = true;
         const erwrong = `${message} at ${token.loc.file}:${token.loc.start.line}:${token.loc.start.column}\n`;
         try {
-             String(appendFileSync("./lexer_err.txt", erwrong));
-        }catch(err){
+            String(appendFileSync("./lexerror.txt", erwrong));
+        } catch (err) {
             console.log("File not found");
         }
+        //TODO will do this when specified
+        // if(err_mode==="lex_err") {
+        //     try {
+        //         String(appendFileSync("./lexerror.txt", erwrong));
+        //     } catch (err) {
+        //         console.log("File not found");
+        //     }
+        // }
+        // else if(err_mode==="syn_err") {
+        //     try {
+        //         String(appendFileSync("./syntax_err.txt", erwrong));
+        //     } catch (err) {
+        //         console.log("File not found");
+        //     }
+        // }
+        // else if(err_mode==="sem_err") {
+        //     try {
+        //         String(appendFileSync("./semantic_err.txt", erwrong));
+        //     } catch (err) {
+        //         console.log("File not found");
+        //     }
+        // }
         if (token.token === "Newline" || token.token === "EndOfFileToken") //trash any input until next line or end
             trash = false;
     }
@@ -132,8 +165,14 @@ export function parser(tokens) {
             next(mode);
             return _token;
         }
-
+        //TODO mode maybe syntaxerr
         panic(`Expected token type "${type}" got "${token.token}"`);
+        if(trash===true)
+        {
+            const _token = token;
+            next(mode);
+            return _token;
+        }
     }
 
     function maybeTake(type, mode) {
@@ -215,8 +254,7 @@ export function parser(tokens) {
         if (!op) return left;
         const next = ExpressionMemberMust();
 
-        // magic!!!
-        const right = MulExpression(next);
+        const right = PlusExpression(next);
 
         const node = {
             token: "BinaryExpression",
@@ -258,12 +296,13 @@ export function parser(tokens) {
 
 
     function MinusExpression(left) {
-        const op = MinusToken();
+        const op = PlusToken() || MinusToken();
         if (!op) return left;
         const next = ExpressionMemberMust();
 
         // magic!!!
-        const right = MulExpression(next);
+        const right = ExpressionMemberMust(); //takes the right of - or somehting
+
 
         const node = {
             token: "BinaryExpression",
@@ -282,8 +321,8 @@ export function parser(tokens) {
 
     function MulExpression(left) {
         const op = MultiplyToken() || DivToken();
-        if (!op) return left;
-        const right = ExpressionMemberMust();
+        if (!op) return left; //left may pertain to 9 or some number; else multiply token
+        const right = ExpressionMemberMust(); //takes the right of * or somehting
 
         const node = {
             token: "BinaryExpression",
@@ -413,6 +452,7 @@ export function parser(tokens) {
             const body = Block() || Statement()
             if(!body){
                 panic("Expected a block/statement for the if statement")
+                trash = true;
             }
 
         }
@@ -502,6 +542,7 @@ export function parser(tokens) {
         const body = Block();
         if (!body) {
             panic("Expected a Block for the function");
+            trash = true;
         }
 
         return {
@@ -526,33 +567,41 @@ export function parser(tokens) {
         const body = Block() ;
         if (!body) {
             panic("Expected a Block for the function");
+            trash = true;
         }
 
-        return {
-            type: "For Loop Statement",
-            args,
-            body,
-            loc: {
-                file: kw.loc.file,
-                start: kw.loc.start,
-                end: body.loc.end,
-            },
-        };
+        if(trash!==true){
+            return {
+                type: "For Loop Statement",
+                args,
+                body,
+                loc: {
+                    file: kw.loc.file,
+                    start: kw.loc.start,
+                    end: body.loc.end,
+                },
+            };
+        }else{ //TODO remove; not sure abt this else
+            return next();
+        }
     }
 
     function Statement() {
         const expression = Expression();
         if (expression) {
             const sc = take("Semicolon", "expression");
-            return {
-                token: "Statement",
-                expression,
-                loc: {
-                    file: expression.loc.file,
-                    start: expression.loc.start,
-                    end: sc.loc.end,
-                },
-            };
+            if(trash===false) {
+                return {
+                    token: "Statement",
+                    expression,
+                    loc: {
+                        file: expression.loc.file,
+                        start: expression.loc.start,
+                        end: sc.loc.end,
+                    },
+                };
+            }else {            return next();
+            }
         }
 
         const ifstmt = IfStatement();
@@ -604,6 +653,7 @@ export function parser(tokens) {
         return next();
     if (token.token != "EndOfFileToken") {
         panic(`Expected token type "EndOfFileToken" got "${token.token}"`);
+
     }
 
     return { ast, tokens: rawTokens };

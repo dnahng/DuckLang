@@ -28,8 +28,6 @@ do{
     console.log("4: View Syntax Error");
     console.log("5: View Semantic Error");
     console.log("6: Exit Program");
-    // let ans = prompt("Please input your choice: ")  ;
-    // ans = await rl.question('Please input your choice: ');
     //todo only for testing
     let ans = "2";
     switch(ans){

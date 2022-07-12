@@ -1,5 +1,9 @@
 if(a=1){show("a");}
 floop(a=1;a<1;a+1){show("a");}
-a=9;
+a=!9*2;
+a=9&*2;
+#a=@9*2
 floop(a=1;;){}
-floop(a=1;)
+if(a=1{show("a");}
+b=b*2;
+&b=!2;

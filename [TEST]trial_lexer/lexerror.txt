@@ -1,0 +1,9 @@
+unexpected character "!" at ./source.txt:3:3
+unexpected character "&" at ./source.txt:4:4
+unexpected character "#" at ./source.txt:5:1
+unexpected character "@" at ./source.txt:5:4
+Expected token type "Semicolon" got "for loop" at ./source.txt:6:1
+unexpected character "=" at ./source.txt:6:8
+Expected token type "CloseParent" got "OpenCurly" at ./source.txt:7:7
+unexpected character "&" at ./source.txt:9:1
+unexpected character "!" at ./source.txt:9:4

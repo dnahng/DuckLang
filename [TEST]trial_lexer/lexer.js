@@ -9,6 +9,8 @@ function isAlpha(c) {
 }
 
 export function lexer(file, str) {
+    //todo remove if test unsuccess
+    let trash = false;
     let line = 1;
     let column = 1;
     let cursor = 0;
@@ -426,9 +428,24 @@ export function lexer(file, str) {
             return maybeEof;
         }
 
-        throw new SyntaxError(
-            `unexpected character "${char}" at ${file}:${line}:${column}`
-        );
+        //TODO uncomment if test below is unsuccessful
+        // throw new SyntaxError(
+        //     `unexpected character "${char}" at ${file}:${line}:${column}`
+        // );
+        try {
+            let erwrong=`unexpected character \"${char}\" at ${file}:${line}:${column}\n`;
+            String(appendFileSync("./lexerror.txt", erwrong));
+            const start=position();
+            next();
+            const end= position();
+            return {
+                token: "trash",
+                loc: { file, start, end }
+            }
+
+        } catch (err) {
+            console.log("File not found");
+        }
     }
     // if (token.token !== "Newline")
     return {
