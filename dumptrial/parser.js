@@ -23,7 +23,11 @@ export function parser(tokens) {
     function panic(message) {
         let data = `${message} at ${token.loc.file}:${token.loc.start.line}:${token.loc.start.column}\n`;
         fs.appendFileSync('dump.txt', data);
+    }
 
+    function lexMessage(message) {
+        let data = `${message} at ${token.loc.file}:${token.loc.start.line}:${token.loc.start.column}\n`;
+        fs.appendFileSync('lexerror.txt', data);
     }
 
     function FunctionCall(name) {
@@ -105,7 +109,7 @@ export function parser(tokens) {
         }
 
         if(token.token === "Id" && type === "Semicolon"){
-            panic(`Lexical Error: Illegal Variable Declaration`);
+            lexMessage(`Lexical Error: Illegal Variable Declaration`);
         }
         else{
             panic(`Expected token type "${type}" got "${token.token}"`); //DITO KA MAGFOCUS RIGHT NOW

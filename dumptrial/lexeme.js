@@ -411,7 +411,7 @@ export function lexeme(file, str) {
                 // next();
                 const end = position();
                 // next();
-                fs.appendFileSync('dump.txt', `Lexical Error: unexpected character "${char}" at ${file}:${line}:${column}\n`);
+                fs.appendFileSync('lexerror.txt', `Lexical Error: unexpected character "${char}" at ${file}:${line}:${column}\n`);
                 next();
 
                 return {

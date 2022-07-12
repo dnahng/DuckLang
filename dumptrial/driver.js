@@ -56,6 +56,7 @@ do{
             break;
 
         case '2':
+            fs.writeFileSync('lexerror.txt', '');
             fs.writeFileSync('dump.txt', '');
             console.log("2");
             console.log("--START--");
@@ -72,17 +73,20 @@ do{
             console.log("you have returned");
             break;
         case '3':
-            console.log("\nLexical Errors:")
-            console.log(String(readFileSync(lexFile)))
+            console.log("\n==Lexical Errors==")
+            console.log(String(readFileSync('./lexerror.txt')));
             await rl.question("Press Enter to return to Menu");
             // await delay(4000);
             break;
         case '4':
-
+            console.log("\n==Syntax Errors==");
+            console.log(String(readFileSync('./dump.txt')))
+            await rl.question("Press Enter to return to Menu");
             break;
         case '5':
             break;
         case '6':
+            fs.writeFileSync('lexerror.txt', '');
             fs.writeFileSync('dump.txt', '');
             console.log("You have exited the program");
             break;
