@@ -86,18 +86,20 @@ export function parser(tokens) {
             token.token === "PlusToken" ||
             token.token === "MinusToken" ||
             token.token === "DivToken" ||
-            token.token === "MultiplyToken"
+            token.token === "MultiplyToken" ||
+            token.token === "Semicolon" ||
+            token.token === "NumericLiteral"
         ) {
             const _token = token;
             next();
             return _token;
         }
 
-        if(token.token === "NumericLiteral"){
-            const _token = token;
-            next();
-            return _token;
-        }
+        // if(token.token === "NumericLiteral"){
+        //     const _token = token;
+        //     next();
+        //     return _token;
+        // }
 
         return null;
     }
@@ -197,32 +199,33 @@ export function parser(tokens) {
         const head = ExpressionMember();
         if (!head) return null;
 
-        return EqualExpression(MinusExpression(PlusExpression(MulExpression(head))));
+        // return EqualExpression(MinusExpression(PlusExpression(MulExpression(head))));
+        return EqualExpression(MulExpression(head));
 
     }
 
-    function PlusExpression(left) {
-        const op = PlusToken();
-        if (!op) return left;
-        const next = ExpressionMemberMust();
-
-        // magic!!!
-        const right = MulExpression(next);
-
-        const node = {
-            token: "BinaryExpression",
-            left,
-            operatorToken: op,
-            right: right,
-            loc: {
-                file: op.loc.file,
-                start: left.loc.start,
-                // end: right.loc.end,
-            },
-        };
-
-        return PlusExpression(node);
-    }
+    // function PlusExpression(left) {
+    //     const op = PlusToken();
+    //     if (!op) return left;
+    //     const next = ExpressionMemberMust();
+    //
+    //     // magic!!!
+    //     const right = MulExpression(next);
+    //
+    //     const node = {
+    //         token: "BinaryExpression",
+    //         left,
+    //         operatorToken: op,
+    //         right: right,
+    //         loc: {
+    //             file: op.loc.file,
+    //             start: left.loc.start,
+    //             // end: right.loc.end,
+    //         },
+    //     };
+    //
+    //     return PlusExpression(node);
+    // }
 
     function EqualExpression(left) {
         const op = EqualToken();
@@ -246,32 +249,32 @@ export function parser(tokens) {
         return EqualExpression(node);
     }
 
-
-    function MinusExpression(left) {
-        const op = MinusToken();
-        if (!op) return left;
-        const next = ExpressionMemberMust();
-
-        // magic!!!
-        const right = MulExpression(next);
-
-        const node = {
-            token: "BinaryExpression",
-            left,
-            operatorToken: op,
-            right: right,
-            loc: {
-                file: op.loc.file,
-                start: left.loc.start,
-                // end: right.loc.end,
-            },
-        };
-
-        return MinusExpression(node);
-    }
+    //
+    // function MinusExpression(left) {
+    //     const op = MinusToken();
+    //     if (!op) return left;
+    //     const next = ExpressionMemberMust();
+    //
+    //     // magic!!!
+    //     const right = MulExpression(next);
+    //
+    //     const node = {
+    //         token: "BinaryExpression",
+    //         left,
+    //         operatorToken: op,
+    //         right: right,
+    //         loc: {
+    //             file: op.loc.file,
+    //             start: left.loc.start,
+    //             // end: right.loc.end,
+    //         },
+    //     };
+    //
+    //     return MinusExpression(node);
+    // }
 
     function MulExpression(left) {
-        const op = MultiplyToken() || DivToken();
+        const op = MultiplyToken() || DivToken() || PlusToken() || MinusToken();
         if (!op) return left;
         const right = ExpressionMemberMust();
 
@@ -279,7 +282,7 @@ export function parser(tokens) {
             token: "BinaryExpression",
             left,
             operatorToken: op,
-            right,
+            right: right,
             loc: {
                 file: op.loc.file,
                 start: left.loc.start,
@@ -312,13 +315,28 @@ export function parser(tokens) {
         const args = []
         const kw = maybeTake("if");
         if (!kw) return null;
-        take("OpenParent", "expression");
-        const condition = Expression();
-        if (!condition) {
-            panic("Expected an Expression for condition");
+        const open = take("OpenParent", "expression");
+        if(open){
+            args.push(open)
         }
+        const id = maybeTake("Id")
+        if(id){
+            args.push(id)
+        }
+
+        // const condition = Expression();
+        // if (!condition) {
+        //     panic("Expected an Expression for condition");
+        // }
+
+        const equal = maybeTake("EqualToken");
+        if(equal){
+            args.push(equal)
+        }
+
         const greater = maybeTake("GreaterThanToken")
         if(greater){
+            args.push(greater)
             const num = take("NumericLiteral")
             args.push(num)
             if(!num){
@@ -328,6 +346,7 @@ export function parser(tokens) {
         }
         const less = maybeTake("LessThanToken")
         if(less){
+            args.push(less)
             const num = take("NumericLiteral")
             args.push(num)
             if(!num){
@@ -335,8 +354,10 @@ export function parser(tokens) {
                 args.push(id)
             }
         }
-        take("CloseParent", "expression");
+        const close = take("CloseParent", "expression");
+        args.push(close)
         const then = Block() || Statement();
+        args.push(then)
         if (!then) {
             panic("Expected an Expression for then");
         }
@@ -346,6 +367,7 @@ export function parser(tokens) {
         // }
         const elf = maybeTake("else if")
         if(elf){
+            args.push(elf)
             const open = take("OpenParent")
             args.push(open)
             const num = maybeTake("NumericLiteral")
@@ -356,6 +378,7 @@ export function parser(tokens) {
             }
             const greater = maybeTake("GreaterThanToken")
             if(greater){
+                args.push(greater)
                 const num = take("NumericLiteral")
                 args.push(num)
                 if(!num){
@@ -365,6 +388,7 @@ export function parser(tokens) {
             }
             const less = maybeTake("LessThanToken")
             if(less){
+                args.push(less)
                 const num = take("NumericLiteral")
                 args.push(num)
                 if(!num){
@@ -374,6 +398,7 @@ export function parser(tokens) {
             }
             const equal =  maybeTake("EqualToken")
             if(equal){
+                args.push(equal)
                 const num = take("NumericLiteral")
                 args.push(num)
                 if(!num){
@@ -384,6 +409,7 @@ export function parser(tokens) {
             const close = take("CloseParent")
             args.push(close)
             const then = Block() || Statement();
+            args.push(then)
             if (!then) {
                 panic("Expected an Expression for then");
             }
@@ -403,7 +429,8 @@ export function parser(tokens) {
         // return args;
         return {
             token: "If",
-            condition,
+            args,
+            // condition,
             then,
             else: elf,
             loc: {
@@ -526,6 +553,9 @@ export function parser(tokens) {
         const expression = Expression();
         if (expression) {
             const sc = take("Semicolon", "expression");
+            // if(sc){
+            //     return sc;
+            // }
             return {
                 token: "Statement",
                 expression,
@@ -535,6 +565,7 @@ export function parser(tokens) {
                     // end: expression.loc.end,
                 },
             };
+
         }
 
         const ifstmt = IfStatement();

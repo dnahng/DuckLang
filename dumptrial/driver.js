@@ -57,8 +57,8 @@ do{
             break;
 
         case '2':
-            // fs.writeFileSync('lexerror.txt', '');
-            // fs.writeFileSync('parserError', '');
+            fs.writeFileSync('lexerror.txt', '');
+            fs.writeFileSync('parserError', '');
             console.log("2");
             console.log("--START--");
             // for (const token of parser(lexer(file, file_input))) {
