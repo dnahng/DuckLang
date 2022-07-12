@@ -22,12 +22,12 @@ export function parser(tokens) {
 
     function panic(message) {
         let data = `${message} at ${token.loc.file}:${token.loc.start.line}:${token.loc.start.column}\n`;
-        fs.appendFileSync('parserError', data);
+        fs.writeFileSync('parserError', data);
     }
 
     function lexMessage(message) {
         let data = `${message} at ${token.loc.file}:${token.loc.start.line}:${token.loc.start.column}\n`;
-        fs.appendFileSync('lexerror.txt', data);
+        fs.writeFileSync('lexerror.txt', data);
     }
 
     function FunctionCall(name) {
@@ -81,7 +81,6 @@ export function parser(tokens) {
         }
 
         if (
-            token.token === "NumericLiteral" ||
             token.token === "String" ||
             token.token === "RegExpToken" ||
             token.token === "PlusToken" ||
@@ -92,6 +91,12 @@ export function parser(tokens) {
             const _token = token;
             next();
             return _token;
+        }
+
+        if(token.token === "NumericLiteral"){
+            const _token = token;
+            next();
+            return token;
         }
 
         return null;
