@@ -436,8 +436,8 @@ export function lexer(file, str) {
             let erwrong=`unexpected character \"${char}\" at ${file}:${line}:${column}\n`;
             String(appendFileSync("./lexer_err.txt", erwrong));
             const start=position();
-            const end= start;
             next();
+            const end= position();
             return {
                 token: "trash",
                 loc: { file, start, end }

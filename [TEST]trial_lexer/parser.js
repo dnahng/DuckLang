@@ -25,12 +25,13 @@ export function parser(tokens) {
                     broot = true; //dont enter lexer again
                 }
                 else { //dont throw trash, broot = false so it goes next to take legitimate token
-                    broot = false; //since you start again, may now enter lexer again
                     trash = false;
-                    return next(mode); //after trash thrown; start again
+                    break;
+                    // return next(mode); //after trash thrown; start again
                 }
             }
         }
+        broot = false; //since you start again, may now enter lexer again
         if (!token) {
             throw new TypeError("next token is undefined");
         }
