@@ -9,10 +9,8 @@ import { stdin as input, stdout as output } from 'node:process';
 
 
 //var declaration
-const lexFile = "./dump.txt";
 let file = "./source.txt";
 let parserFile = "./parserError"
-import f from "fs";
 import path from "path";
 
 let file_input = String(readFileSync(file));
@@ -59,6 +57,7 @@ do{
         case '2':
             fs.writeFileSync('lexerror.txt', '');
             fs.writeFileSync('parserError', '');
+            fs.writeFileSync('semErr', '');
             console.log("2");
             console.log("--START--");
             // for (const token of parser(lexer(file, file_input))) {
@@ -85,10 +84,14 @@ do{
             await rl.question("Press Enter to return to Menu");
             break;
         case '5':
+            console.log("\n==Semantic Errors==");
+            console.log(String(readFileSync('./semErr')))
+            await rl.question("Press Enter to return to Menu");
             break;
         case '6':
             fs.writeFileSync('lexerror.txt', '');
             fs.writeFileSync('parserError', '');
+            fs.writeFileSync('semErr', '');
             console.log("You have exited the program");
             break;
         default:

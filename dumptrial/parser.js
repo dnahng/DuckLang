@@ -22,12 +22,17 @@ export function parser(tokens) {
 
     function panic(message) {
         let data = `${message} at ${token.loc.file}:${token.loc.start.line}:${token.loc.start.column}\n`;
-        fs.writeFileSync('parserError', data);
+        fs.appendFileSync('parserError', data);
     }
 
     function lexMessage(message) {
         let data = `${message} at ${token.loc.file}:${token.loc.start.line}:${token.loc.start.column}\n`;
-        fs.writeFileSync('lexerror.txt', data);
+        fs.appendFileSync('lexerror.txt', data);
+    }
+
+    function semError(message) {
+        let data = `${message} at ${token.loc.file}:${token.loc.start.line}:${token.loc.start.column}\n`;
+        fs.appendFileSync('semErr', data);
     }
 
     function FunctionCall(name) {
@@ -204,28 +209,7 @@ export function parser(tokens) {
 
     }
 
-    // function PlusExpression(left) {
-    //     const op = PlusToken();
-    //     if (!op) return left;
-    //     const next = ExpressionMemberMust();
-    //
-    //     // magic!!!
-    //     const right = MulExpression(next);
-    //
-    //     const node = {
-    //         token: "BinaryExpression",
-    //         left,
-    //         operatorToken: op,
-    //         right: right,
-    //         loc: {
-    //             file: op.loc.file,
-    //             start: left.loc.start,
-    //             // end: right.loc.end,
-    //         },
-    //     };
-    //
-    //     return PlusExpression(node);
-    // }
+
 
     function EqualExpression(left) {
         const op = EqualToken();
@@ -249,29 +233,6 @@ export function parser(tokens) {
         return EqualExpression(node);
     }
 
-    //
-    // function MinusExpression(left) {
-    //     const op = MinusToken();
-    //     if (!op) return left;
-    //     const next = ExpressionMemberMust();
-    //
-    //     // magic!!!
-    //     const right = MulExpression(next);
-    //
-    //     const node = {
-    //         token: "BinaryExpression",
-    //         left,
-    //         operatorToken: op,
-    //         right: right,
-    //         loc: {
-    //             file: op.loc.file,
-    //             start: left.loc.start,
-    //             // end: right.loc.end,
-    //         },
-    //     };
-    //
-    //     return MinusExpression(node);
-    // }
 
     function MulExpression(left) {
         const op = MultiplyToken() || DivToken() || PlusToken() || MinusToken();
@@ -289,6 +250,9 @@ export function parser(tokens) {
                 // end: right.loc.end,
             },
         };
+        if(left.token !== right.token){
+            semError('Semantic Error: Data Type Mismatch');
+        }
 
         return MulExpression(node);
     }
