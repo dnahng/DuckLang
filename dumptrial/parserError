@@ -1,5 +1,3 @@
-Expected ExpressionMember got "EndOfFileToken" at ./source.txt:1:8
-Expected token type "Semicolon" got "EndOfFileToken" at ./source.txt:1:8
-Expected ExpressionMember got "EndOfFileToken" at ./source.txt:1:8
-Expected token type "Semicolon" got "EndOfFileToken" at ./source.txt:1:8
-Expected token type "Semicolon" got "EndOfFileToken" at ./source.txt:1:9
+
+Expected token type "Semicolon" got "PlusToken" at ./source.txt:1:9
+Expected token type "Semicolon" got "NumericLiteral" at ./source.txt:1:10
