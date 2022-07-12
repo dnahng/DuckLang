@@ -1,0 +1,3 @@
+Expected token type "Semicolon" got "for loop" at ./source.txt:4:1
+Expected token type "Semicolon" got "for loop" at ./source.txt:4:1
+Expected a Block for the function at ./source.txt:6:1
