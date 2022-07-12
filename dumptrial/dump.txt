@@ -1,2 +1,2 @@
-
-unexpected character "a" at ./source.txt:1:2
+Expected token type "Semicolon" got "PlusToken" at ./source.txt:1:9
+Expected token type "Semicolon" got "NumericLiteral" at ./source.txt:1:10

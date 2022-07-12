@@ -83,7 +83,11 @@ export function parser(tokens) {
         if (
             token.token === "NumericLiteral" ||
             token.token === "String" ||
-            token.token === "RegExpToken"
+            token.token === "RegExpToken" ||
+            token.token === "PlusToken" ||
+            token.token === "MinusToken" ||
+            token.token === "DivToken" ||
+            token.token === "MultiplyToken"
         ) {
             const _token = token;
             next();
