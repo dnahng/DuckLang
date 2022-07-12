@@ -1,4 +1,5 @@
-import * as fs from 'fs';
+import { appendFileSync } from 'fs'
+
 function isNumeric(c) {
     return "0" <= c && c <= "9";
 }
@@ -7,7 +8,7 @@ function isAlpha(c) {
     return ("a" <= c && c <= "z") || ("A" <= c && c <= "Z");
 }
 
-export function lexeme(file, str) {
+export function lexer(file, str) {
     let line = 1;
     let column = 1;
     let cursor = 0;
@@ -233,13 +234,13 @@ export function lexeme(file, str) {
         return null;
     }
 
-    const KEYWORDS = {
+    const KEYWORDS = { //pattern is either they ({
         if: "if",
         elf:"else if",
         el: "else",
         while : "while loop",
         show : "output",
-        //shown : "output\n",
+        //shown : "output\n", //todo PLS remove this T_T
         floop :"for loop",
         const : "constant",
         inp : "prompt",
@@ -248,21 +249,21 @@ export function lexeme(file, str) {
     };
 
     function id() {
-        var buffer = "";
+        let buffer = "";
         if (!isAlpha(char)) return null;
         const start = position();
         buffer += char;
         next();
 
-        while (isNumeric(char) || isAlpha(char)) {
+        while (isNumeric(char) || isAlpha(char)) { //todo dito check keyword
             buffer += char;
             next();
         }
 
         const end = position();
 
-        const token = KEYWORDS[buffer];
-        if (token) {
+        const token = KEYWORDS[buffer]; //returns undefined if not a keyword
+        if (token) { //check if keyword; put an error here
             return {
                 token,
                 lexeme: buffer,
@@ -402,31 +403,9 @@ export function lexeme(file, str) {
         return null;
     }
 
-    function lexErr(){
-        const illChars = [ "!", "$", '@', '#', '%', '^', '&', '_']
-
-        for (const ill of illChars){
-            if(String(char) === ill){
-                const start = position();
-                // next();
-                const end = position();
-                // next();
-                fs.appendFileSync('lexerror.txt', `Lexical Error: unexpected character "${char}" at ${file}:${line}:${column}\n`);
-                next();
-
-                return {
-                    errortype: "LexicalError",
-                    loc: { file, start, end },
-                };
-            }
-        }
-
-    }//end lexerr
-
-
     function next2(mode) {
         function value() {
-            return number() || string() || regexp() || lexErr();
+            return number() || string() || regexp();
         }
 
         const token =
@@ -435,13 +414,10 @@ export function lexeme(file, str) {
             semicolon() ||
             parents() ||
             number() ||
-            lexErr() ||
             (mode === "expression" ? value() : operator()) ||
             eol();
 
-
-
-        if (token && !token.errortype) {
+        if (token) {
             return token;
         }
 
@@ -450,10 +426,11 @@ export function lexeme(file, str) {
             return maybeEof;
         }
 
-
-
-    } //end of next
-
+        throw new SyntaxError(
+            `unexpected character "${char}" at ${file}:${line}:${column}`
+        );
+    }
+    // if (token.token !== "Newline")
     return {
         next: next2,
     };

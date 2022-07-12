@@ -1,10 +1,34 @@
-import * as fs from 'fs';
+import { appendFileSync } from 'fs'
+// import * as readline from 'node:readline/promises';
+import { stdin as input, stdout as output } from 'node:process';
+
+
 export function parser(tokens) {
+    let trash = false;
+    let broot = false; //brotforce code LOLOLOL
     let token = null;
     const rawTokens = [];
 
     function next(mode) {
-        token = tokens.next(mode);
+
+        //trash false if next code line
+        if (broot===false) {
+            broot = false;
+            token = tokens.next(mode);
+        }
+        if (trash===true) {
+            while (token.token !== "Newline" || token.token !== "EndOfFileToken" && trash===true) {
+                if (trash === true && token.token !=="Newline" && token.token !=="EndOfFileToken") {
+                    token = tokens.next(mode);
+                    broot = true;
+                }
+                else {
+                    broot = false;
+                    trash = false;
+                    return next(mode);
+                }
+            }
+        }
         if (!token) {
             throw new TypeError("next token is undefined");
         }
@@ -20,10 +44,15 @@ export function parser(tokens) {
     }
 
     function panic(message) {
-        throw new SyntaxError(
-            // @ts-ignore
-            `${message} at ${token.loc.file}:${token.loc.start.line}:${token.loc.start.column}`
-        );
+        trash = true;
+        const erwrong = `${message} at ${token.loc.file}:${token.loc.start.line}:${token.loc.start.column}\n`;
+        try {
+             String(appendFileSync("./lexer_err.txt", erwrong));
+        }catch(err){
+            console.log("File not found");
+        }
+        if (token.token === "Newline" || token.token === "EndOfFileToken") //trash any input until next line or end
+            trash = false;
     }
 
     function FunctionCall(name) {
@@ -97,7 +126,7 @@ export function parser(tokens) {
         return next;
     }
 
-    function take(type, mode) {
+    function take(type, mode) { //todo the one that throws error
         if (token.token === type) {
             const _token = token;
             next(mode);
@@ -168,27 +197,6 @@ export function parser(tokens) {
     }
 
 
-
-    // ASSIGNMENT OP FUNC
-    // function AssignmentOp(left){
-    //     const op = EqualToken();
-    //     if(!op) return left;
-    //     if(left.token !== 'Id') return null;
-    //     const next = take('NumericLiteral');
-    //     const right = ExpressionMemberMust();
-    //     const node = {
-    //         type: "EqualToken",
-    //         left,
-    //         operatorToken: op,
-    //         right,
-    //         loc: {
-    //             file: op.loc.file,
-    //             start: left.loc.start,
-    //             end: right.loc.end,
-    //         },
-    //     }
-    //     return AssignmentOp(node);
-    // }
 
 
     function Expression() {
@@ -311,13 +319,21 @@ export function parser(tokens) {
 
     function IfStatement() {
         //kw is for keyword
+        
         const args = []
         const kw = maybeTake("if");
         if (!kw) return null;
-        take("OpenParent", "expression");
+        take("OpenParent", "expression")
+        //todo my got, bruteforce code
+        if(trash===true)
+        {
+            trash = true;
+            return next();
+            return null; //lol
+        }
         const condition = Expression();
         if (!condition) {
-            panic("Expected an Expression for condition");
+            panic("Expected an Expression for condition"); //semantic? no
         }
         const greater = maybeTake("GreaterThanToken")
         if(greater){
@@ -347,7 +363,7 @@ export function parser(tokens) {
         //     panic("Expected a block/statement for the if statement")
         // }
         const elf = maybeTake("else if")
-        if(elf){
+        if(elf && trash!==true){
             const open = take("OpenParent")
             args.push(open)
             const num = maybeTake("NumericLiteral")
@@ -400,20 +416,21 @@ export function parser(tokens) {
             }
 
         }
-
-        const end = elf ? elf.loc.end : then.loc.end;
-        // return args;
-        return {
-            token: "If",
-            condition,
-            then,
-            else: elf,
-            loc: {
-                file: kw.loc.file,
-                start: kw.loc.start,
-                end,
-            },
-        };
+        //todo NEED SALUHIN; done?
+        if(trash===false) {
+            const end = elf ? elf.loc.end : then.loc.end;
+            return {
+                token: "If",
+                condition,
+                then,
+                else: elf,
+                loc: {
+                    file: kw.loc.file,
+                    start: kw.loc.start,
+                    end,
+                },
+            };
+        }
     }
 
     function ArgumentList() {
@@ -511,7 +528,6 @@ export function parser(tokens) {
             panic("Expected a Block for the function");
         }
 
-
         return {
             type: "For Loop Statement",
             args,
@@ -540,6 +556,17 @@ export function parser(tokens) {
         }
 
         const ifstmt = IfStatement();
+        if (trash === true) //todo IF TRASH GO NEXT
+        {
+            return null;
+            // if (
+            //     token.token === "CommentToken" ||
+            //     token.token === "Whitespace" ||
+            //     token.token === "Newline"
+            // ) {
+            //     return next(mode);
+            // }
+        }
         if (ifstmt) {
             maybeTake("Semicolon", "expression");
             return ifstmt;
@@ -562,6 +589,7 @@ export function parser(tokens) {
         const stmts = [];
         for (;;) {
             const stmt = Statement();
+            // if (!stmt) break;
             if (!stmt) break;
             stmts.push(stmt);
         }
@@ -572,6 +600,8 @@ export function parser(tokens) {
     const ast = Statements();
 
     // @ts-ignore
+    if(!Statements())
+        return next();
     if (token.token != "EndOfFileToken") {
         panic(`Expected token type "EndOfFileToken" got "${token.token}"`);
     }
