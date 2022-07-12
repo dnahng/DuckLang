@@ -327,6 +327,8 @@ export function parser(tokens) {
         // const condition = Expression();
         // if (!condition) {
         //     panic("Expected an Expression for condition");
+        // }else {
+        //     args.push(condition)
         // }
 
         const equal = maybeTake("EqualToken");
@@ -354,13 +356,25 @@ export function parser(tokens) {
                 args.push(id)
             }
         }
-        const close = take("CloseParent", "expression");
-        args.push(close)
+        const close = take("CloseParent")
+        if(!close){
+            panic("Missing semicolon")
+        }else{
+            args.push(close)
+        }
         const then = Block() || Statement();
         args.push(then)
         if (!then) {
-            panic("Expected an Expression for then");
+            panic("Expected a block/statement for if statement");
         }
+        // const close = take("CloseParent", "expression");
+        // args.push(close)
+        // const then = Block() || Statement();
+        // if (!then) {
+        //     panic("Expected an Expression");
+        // }else{
+        //     args.push(then)
+        // }
         // const body = Block()
         // if(!body){
         //     panic("Expected a block/statement for the if statement")
@@ -407,11 +421,15 @@ export function parser(tokens) {
                 }
             }
             const close = take("CloseParent")
-            args.push(close)
+            if(!close){
+                panic("Missing semicolon")
+            }else{
+                args.push(close)
+            }
             const then = Block() || Statement();
             args.push(then)
             if (!then) {
-                panic("Expected an Expression for then");
+                panic("Expected a block/statement for the if statement");
             }
         }
         // let el = null;
