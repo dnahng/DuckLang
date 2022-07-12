@@ -5,7 +5,8 @@ import { stdin as input, stdout as output } from 'node:process';
 
 export function parser(tokens) {
     let trash = false;
-    let broot = false; //brotforce code LOLOLOL
+    let broot = false; //brotforce code LOLOLOL..idk what it does anymore maybe remove
+    let err_mode = "none"; //TODO will use for lex_error or syn_error or sem_error mode
     let token = null;
     const rawTokens = [];
 
@@ -16,16 +17,17 @@ export function parser(tokens) {
             broot = false;
             token = tokens.next(mode);
         }
-        if (trash===true) {
-            while (token.token !== "Newline" || token.token !== "EndOfFileToken" && trash===true) {
-                if (trash === true && token.token !=="Newline" && token.token !=="EndOfFileToken") {
-                    token = tokens.next(mode);
-                    broot = true;
+        if (trash===true || token.token === "trash") {
+            while (token.token !== "Newline" || token.token !== "EndOfFileToken" && trash===true || token.token === "trash") {
+                if (trash === true || token.token === "trash" && token.token !=="Newline" && token.token !=="EndOfFileToken") {
+                    //enter and throw trash away
+                    token = tokens.next(mode); //gets next possibly legitimate variable
+                    broot = true; //dont enter lexer again
                 }
-                else {
-                    broot = false;
+                else { //dont throw trash, broot = false so it goes next to take legitimate token
+                    broot = false; //since you start again, may now enter lexer again
                     trash = false;
-                    return next(mode);
+                    return next(mode); //after trash thrown; start again
                 }
             }
         }
@@ -47,10 +49,32 @@ export function parser(tokens) {
         trash = true;
         const erwrong = `${message} at ${token.loc.file}:${token.loc.start.line}:${token.loc.start.column}\n`;
         try {
-             String(appendFileSync("./lexer_err.txt", erwrong));
-        }catch(err){
+            String(appendFileSync("./lexer_err.txt", erwrong));
+        } catch (err) {
             console.log("File not found");
         }
+        //TODO will do this when specified
+        // if(err_mode==="lex_err") {
+        //     try {
+        //         String(appendFileSync("./lexer_err.txt", erwrong));
+        //     } catch (err) {
+        //         console.log("File not found");
+        //     }
+        // }
+        // else if(err_mode==="syn_err") {
+        //     try {
+        //         String(appendFileSync("./syntax_err.txt", erwrong));
+        //     } catch (err) {
+        //         console.log("File not found");
+        //     }
+        // }
+        // else if(err_mode==="sem_err") {
+        //     try {
+        //         String(appendFileSync("./semantic_err.txt", erwrong));
+        //     } catch (err) {
+        //         console.log("File not found");
+        //     }
+        // }
         if (token.token === "Newline" || token.token === "EndOfFileToken") //trash any input until next line or end
             trash = false;
     }

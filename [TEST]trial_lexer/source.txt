@@ -1,5 +1,5 @@
 if(a=1){show("a");}
 floop(a=1;a<1;a+1){show("a");}
-a=9;
+a=!9;
 floop(a=1;;){}
 floop(a=1;)
