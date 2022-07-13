@@ -1,4 +1,6 @@
 import * as fs from 'fs';
+import {parser} from "./parser.js";
+
 function isNumeric(c) {
     return "0" <= c && c <= "9";
 }
@@ -31,15 +33,22 @@ export function lexeme(file, str) {
     function stringOfType(delimiter) {
         let buffer = "";
         if (char !== delimiter) return null;
-
         const start = position();
         next();
+        // const last = buffer.charAt(buffer.length - 1);
         while (char !== delimiter) {
             buffer += char;
             next();
+            if(char === ";"){
+                fs.writeFileSync("parserError",`Syntax Error: Missing ${delimiter} at ${file}:${line}:${column}\n`)
+                break;
+            }
         }
-
-        next(); // last delimiter
+        next();
+        // while(next()!==delimiter){
+        //     fs.writeFileSync("parserError",`Syntax Error: Missing ${delimiter} at ${file}:${line}:${column}\n`)
+        // }
+        // next();
 
         const end = position();
         return {
