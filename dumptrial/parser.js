@@ -47,11 +47,19 @@ export function parser(tokens) {
         const expr = Expression();
         if (expr) {
             args.push(expr);
-            for (let i in idArr) { //ID BALIKAN
-                const id = maybeTake("Id", "expression");
-                if (!id) break;
-                if(id.lexeme !== idArr[i].lexeme){semError(`Undefined variable "${id.lexeme}"`)}
+            if(expr.token === 'Id'){
+                const id = expr
+                if(idArr.length !== 0) {
+                    for (let i in idArr) {
+                        if (!id) break;
+                        if (id.lexeme !== idArr[i].lexeme) {
+                            semError(`Undefined variable "${id.lexeme}"`)
+                        }
+                    }
+                }
+                else{semError(`Undefined variable "${id.lexeme}"`)}
             }
+
         }
 
         const close = take("CloseParent");
@@ -266,7 +274,7 @@ export function parser(tokens) {
                 // end: right.loc.end,
             },
         };
-        if(left.token !== right.token || left.token === "Id" && right.token === "Id"){
+        if(left.token !== right.token && left.token !== "BinaryExpression" || left.token === "Id" && right.token === "Id"){
             let flag = false;
                 if (left.token === "Id" || right.token === "NumericLiteral") {
                     for (let i = 0; i < idArr.length; i++) {
