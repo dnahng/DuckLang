@@ -268,31 +268,35 @@ export function parser(tokens) {
             },
         };
         if(left.token !== right.token || left.token === right.token){
+            let flag = false;
                 if (left.token === "Id" || right.token === "NumericLiteral") {
                     for (let i = 0; i < idArr.length; i++) {
                         if (idArr[i].lexeme === left.lexeme) {
+                            flag = true;
                             if (idArr[i].token === right.token) {
                                 return MulExpression(node);
                             }
                         }
                     }
-                    semError(`"Undefined variable "${left.lexeme}"`)
+                    if(!flag){
+                        semError(`Undefined variable "${left.lexeme}"`)
+                    }
+                    else{semError('Semantic Error: Data Type Mismatch');}
 
-                }else {
-                    semError('Semantic Error: Data Type Mismatch');
+
                 }
-
-                if (right.token === "Id" || left.token === "NumericLiteral") {
+                else if (right.token === "Id" || left.token === "NumericLiteral") {
                     for (let i = 0; i < idArr.length; i++) {
                         if (idArr[i].lexeme === right.lexeme) {
-                            if (idArr[i].token === right.token) {
+                            flag = true;
+                            if (idArr[i].token === left.token) {
                                 return MulExpression(node);
                             }
                         }
                     }
-                    semError(`"Undefined variable "${right.lexeme}"`)
+                    if(!flag){semError(`Undefined variable "${right.lexeme}"`);}
+                    else{semError('Semantic Error: Data Type Mismatch');}
 
-                    // semError(`"Undefined variable "${right.lexeme}"`)
                 }else {
                     semError('Semantic Error: Data Type Mismatch');
                 }
@@ -332,7 +336,8 @@ export function parser(tokens) {
             args.push(id)
             for(let i in idArr){
                 if(id.lexeme !== idArr[i].lexeme){
-                    semError(`Semantic Error: Undeclared Variable ${id.lexeme}`);
+                    semError(`Semantic Error: Undefined Variable "${id.lexeme}"`);
+                    break;
                 }
             }
         }
@@ -357,6 +362,12 @@ export function parser(tokens) {
             if(!num){
                 const id = take("Id")
                 args.push(id)
+                for(let i in idArr){
+                    if(id.lexeme !== idArr[i].lexeme){
+                        semError(`Semantic Error: Undefined Variable "${id.lexeme}"`);
+                        break;
+                    }
+                }
             }
         }
         const less = maybeTake("LessThanToken")
@@ -367,6 +378,12 @@ export function parser(tokens) {
             if(!num){
                 const id = take("Id")
                 args.push(id)
+                for(let i in idArr){
+                    if(id.lexeme !== idArr[i].lexeme){
+                        semError(`Semantic Error: Undefined Variable "${id.lexeme}"`);
+                        break;
+                    }
+                }
             }
         }
         const close = take("CloseParent")
