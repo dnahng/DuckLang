@@ -40,7 +40,7 @@ export function lexeme(file, str) {
             buffer += char;
             next();
             if(char === ";"){
-                fs.writeFileSync("parserError",`Syntax Error: Missing ${delimiter} at ${file}:${line}:${column}\n`)
+                fs.writeFileSync("parserError",`Syntax Error: Unmatched ${delimiter} at ${file}:${line}:${column}\n`)
                 break;
             }
         }

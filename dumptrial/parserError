@@ -1,0 +1,2 @@
+Syntax Error: Missing " at ./source.txt:1:13
+Expected token type "Semicolon" got "EndOfFileToken" at ./source.txt:1:14
