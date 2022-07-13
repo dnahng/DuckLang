@@ -102,7 +102,8 @@ export function parser(tokens) {
             token.token === "DivToken" ||
             token.token === "MultiplyToken" ||
             token.token === "Semicolon" ||
-            token.token === "NumericLiteral"
+            token.token === "NumericLiteral" ||
+            token.token === "constant"
         ) {
             const _token = token;
             next();
