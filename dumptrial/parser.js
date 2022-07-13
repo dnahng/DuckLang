@@ -581,7 +581,7 @@ export function parser(tokens) {
     }
 
     // LOOPING STATEMENT
-    function FloopStatemenet() {
+    function FloopStatement() {
         const kw = maybeTake("for loop");
         if (!kw) return null;
 
@@ -603,6 +603,30 @@ export function parser(tokens) {
             },
         };
     }
+
+    function wLoop() {
+        const kw = maybeTake("while loop");
+        if (!kw) return null;
+
+        const args = ArgumentList();
+        const body = Block() ;
+        if (!body) {
+            panic("Expected a Block for the function");
+        }
+
+
+        return {
+            type: "While Loop",
+            args,
+            body,
+            loc: {
+                file: kw.loc.file,
+                start: kw.loc.start,
+                // end: body.loc.end,
+            },
+        };
+    }
+
 
     function Statement() {
         const expression = Expression();
@@ -634,9 +658,14 @@ export function parser(tokens) {
             return fnstmt;
         }
 
-        const floopstmt = FloopStatemenet();
+        const floopstmt = FloopStatement();
         if(floopstmt){
             return floopstmt;
+        }
+
+        const wloop = wLoop();
+        if(wloop){
+            return wloop;
         }
 
         return null;
