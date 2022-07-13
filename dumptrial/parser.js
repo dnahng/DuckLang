@@ -320,7 +320,7 @@ export function parser(tokens) {
 
     function IfStatement() {
         //kw is for keyword
-        const args = []
+        const args = [];
         const kw = maybeTake("if");
         if (!kw) return null;
         const open = take("OpenParent", "expression");
@@ -330,6 +330,11 @@ export function parser(tokens) {
         const id = maybeTake("Id")
         if(id){
             args.push(id)
+            for(let i in idArr){
+                if(id.lexeme !== idArr[i].lexeme){
+                    semError(`Semantic Error: Undeclared Variable ${id.lexeme}`);
+                }
+            }
         }
 
         // const condition = Expression();
