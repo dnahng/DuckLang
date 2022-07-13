@@ -1,6 +1,7 @@
 import * as fs from 'fs';
+import {lexeme} from "./lexeme.js";
 export function parser(tokens) {
-    let idArr = []; //try lang
+    var idArr = []; //try lang
     let token = null;
     const rawTokens = [];
 
@@ -219,6 +220,11 @@ export function parser(tokens) {
 
         const right = MulExpression(next);
 
+        // if(left.token === 'Id'){
+        //     declaredVar.push(left.lexeme)
+        //     declaredVar.push(left.token)
+        // }
+
         const node = {
             token: "BinaryExpression",
             left,
@@ -241,6 +247,9 @@ export function parser(tokens) {
         return EqualExpression(node);
     }
 
+    // function UndeclaredID(){
+    //     if(id)
+    // }
 
     function MulExpression(left) {
         const op = MultiplyToken() || DivToken() || PlusToken() || MinusToken();
@@ -258,17 +267,19 @@ export function parser(tokens) {
                 // end: right.loc.end,
             },
         };
+        MulExpression.apply(this,idArr.lexeme)
         if(left.token !== right.token && left.token !== "BinaryExpression"){
-            if(left.token === "Id"){
-                for(let i = 0; i<idArr.length; i++){
-                    if(idArr[i].lexeme === left.lexeme){
-                        if(idArr[i].token === right.token){
-                            return MulExpression(node);
+                if (left.token === "Id") {
+                    for (let i = 0; i < idArr.length; i++) {
+                        if (idArr[i].lexeme === left.lexeme) {
+                            if (idArr[i].token === right.token) {
+                                return MulExpression(node);
+                            }
                         }
                     }
+                    semError(`"Undefined variable "${left.lexeme}"`)
                 }
-            }
-            semError('Semantic Error: Data Type Mismatch');
+                semError('Semantic Error: Data Type Mismatch');
         }
 
         return MulExpression(node);

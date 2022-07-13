@@ -1,2 +1,0 @@
-Lexical Error: unexpected character "$" at ./source.txt:5:1
-Lexical Error: unexpected character "$" at ./source.txt:5:2
