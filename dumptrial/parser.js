@@ -267,7 +267,6 @@ export function parser(tokens) {
                 // end: right.loc.end,
             },
         };
-        MulExpression.apply(this,idArr.lexeme)
         if(left.token !== right.token && left.token !== "BinaryExpression"){
                 if (left.token === "Id") {
                     for (let i = 0; i < idArr.length; i++) {
