@@ -1,1 +1,1 @@
-a = "miciela;
+a = s+2;

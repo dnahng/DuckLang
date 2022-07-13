@@ -267,8 +267,8 @@ export function parser(tokens) {
                 // end: right.loc.end,
             },
         };
-        if(left.token !== right.token && left.token !== "BinaryExpression"){
-                if (left.token === "Id") {
+        if(left.token !== right.token || left.token === right.token){
+                if (left.token === "Id" || right.token === "NumericLiteral") {
                     for (let i = 0; i < idArr.length; i++) {
                         if (idArr[i].lexeme === left.lexeme) {
                             if (idArr[i].token === right.token) {
@@ -277,10 +277,27 @@ export function parser(tokens) {
                         }
                     }
                     semError(`"Undefined variable "${left.lexeme}"`)
-                }
-                semError('Semantic Error: Data Type Mismatch');
-        }
 
+                }else {
+                    semError('Semantic Error: Data Type Mismatch');
+                }
+
+                if (right.token === "Id" || left.token === "NumericLiteral") {
+                    for (let i = 0; i < idArr.length; i++) {
+                        if (idArr[i].lexeme === right.lexeme) {
+                            if (idArr[i].token === right.token) {
+                                return MulExpression(node);
+                            }
+                        }
+                    }
+                    semError(`"Undefined variable "${right.lexeme}"`)
+
+                    // semError(`"Undefined variable "${right.lexeme}"`)
+                }else {
+                    semError('Semantic Error: Data Type Mismatch');
+                }
+
+        }
         return MulExpression(node);
     }
 

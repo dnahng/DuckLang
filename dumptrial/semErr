@@ -1,0 +1,2 @@
+"Undefined variable "s" at ./source.txt:1:8
+Semantic Error: Data Type Mismatch at ./source.txt:1:8
