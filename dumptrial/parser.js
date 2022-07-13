@@ -47,11 +47,10 @@ export function parser(tokens) {
         const expr = Expression();
         if (expr) {
             args.push(expr);
-            for (;;) {
-                const colon = maybeTake("Colon", "expression");
-                if (!colon) break;
-                const expr = Expression();
-                args.push(expr);
+            for (let i in idArr) { //ID BALIKAN
+                const id = maybeTake("Id", "expression");
+                if (!id) break;
+                if(id.lexeme !== idArr[i].lexeme){semError(`Undefined variable "${id.lexeme}"`)}
             }
         }
 
@@ -267,7 +266,7 @@ export function parser(tokens) {
                 // end: right.loc.end,
             },
         };
-        if(left.token !== right.token || left.token === right.token){
+        if(left.token !== right.token || left.token === "Id" && right.token === "Id"){
             let flag = false;
                 if (left.token === "Id" || right.token === "NumericLiteral") {
                     for (let i = 0; i < idArr.length; i++) {
